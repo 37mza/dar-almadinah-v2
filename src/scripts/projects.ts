@@ -4,7 +4,7 @@
 import { lockScroll, unlockScroll } from './scroll-lock';
 
 interface ProjectData {
-  images: string[]; name: string; summary: string; category: string;
+  images: string[]; name: string; summary?: string; category: string;
   location?: string; status?: string; year?: string; area?: string; placeholder: boolean;
 }
 
@@ -44,7 +44,9 @@ if (dialog) {
     cover.src = p.images[0];
     dialog!.querySelector('[data-po-cat]')!.textContent = p.category;
     dialog!.querySelector('[data-po-name]')!.textContent = p.name;
-    dialog!.querySelector('[data-po-summary]')!.textContent = p.summary;
+    const sum = dialog!.querySelector<HTMLElement>('[data-po-summary]')!;
+    sum.textContent = p.summary ?? '';
+    sum.hidden = !p.summary;
     (['location', 'year', 'area', 'status'] as const).forEach((k) => {
       const row = dialog!.querySelector<HTMLElement>(`[data-fact="${k}"]`)!;
       const v = p[k];
@@ -160,7 +162,7 @@ if (dialog) {
     await close({ instant: true });
     if (!slug) return;
     const cat = document.querySelector<HTMLElement>(`a[data-project="${slug}"]`)?.closest<HTMLElement>('[data-category]')?.dataset.category;
-    const typeIndex = { hospitality: 0, residential: 1, commercial: 2 }[cat ?? ''] as number | undefined;
+    const typeIndex = { hospitality: 0, residential: 1, commercial: 2, mixed: 3 }[cat ?? ''] as number | undefined;
     const isAr = document.documentElement.lang === 'ar';
     document.dispatchEvent(new CustomEvent('inquiry:open', {
       detail: { typeIndex, message: `${isAr ? 'بخصوص مشروع مماثل لـ' : 'Regarding a project similar to'}: ${data[slug].name}\n` },

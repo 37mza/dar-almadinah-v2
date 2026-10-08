@@ -68,7 +68,7 @@ export const strings = {
     projects: {
       title: 'المشاريع',
       lede: 'مختارات من أعمالنا في الضيافة والسكن والتجارة.',
-      filters: { all: 'الكل', hospitality: 'ضيافة', residential: 'سكني', commercial: 'تجاري' },
+      filters: { all: 'الكل', hospitality: 'ضيافة', residential: 'سكني', commercial: 'تجاري', mixed: 'متعدد الاستخدامات' },
       empty: 'لا توجد مشاريع في هذا التصنيف بعد.',
       location: 'الموقع', year: 'السنة', area: 'المساحة', status: 'الحالة', type: 'النوع',
       view: 'عرض المشروع',
@@ -87,13 +87,13 @@ export const strings = {
     nav: { work: 'Work', practice: 'Practice', inquire: 'Request a proposal' },
     meta: {
       homeTitle: 'Dar Al Madinah Engineering Consultants',
-      homeDesc: 'Architecture and engineering consultancy in Medina, Saudi Arabia, focused on hotels, residential and commercial buildings.',
+      homeDesc: 'Architecture and engineering consultancy in Madinah, Saudi Arabia, focused on hotels, residential and commercial buildings.',
       projectsTitle: 'Work — Dar Al Madinah',
       projectsDesc: 'Selected hospitality, residential and commercial projects by Dar Al Madinah.',
     },
     hero: {
-      eyebrow: 'Medina · Over twenty years of practice',
-      title: ['Architecture', 'shaped by', 'Medina'],
+      eyebrow: 'Madinah · Over twenty years of practice',
+      title: ['Architecture', 'shaped by', 'Madinah'],
       lede: 'Hotels, residences and commercial buildings, designed with rigor, built to last, and delivered within budget.',
       cta: 'Request a proposal',
       secondary: 'View the work',
@@ -110,12 +110,12 @@ export const strings = {
         { t: 'Hospitality design', d: 'Hotels and serviced apartments, from area feasibility down to the guest room detail.' },
         { t: 'Architectural design', d: 'Residential, commercial and mixed-use buildings with facades that belong to their place.' },
         { t: 'Engineering design', d: 'Structural and MEP coordination that keeps the design buildable at a considered cost.' },
-        { t: 'Permits & approvals', d: 'Handling requirements and authority approvals across Medina.' },
+        { t: 'Permits & approvals', d: 'Handling requirements and authority approvals across Madinah.' },
       ],
     },
     inquiry: {
       kicker: 'Start here',
-      title: 'Planning a project in Medina?',
+      title: 'Planning a project in Madinah?',
       lede: 'Send us a project brief or an RFP. We reply within two working days.',
       name: 'Name',
       company: 'Company / organization',
@@ -137,7 +137,7 @@ export const strings = {
     projects: {
       title: 'Work',
       lede: 'Selected hospitality, residential and commercial projects.',
-      filters: { all: 'All', hospitality: 'Hospitality', residential: 'Residential', commercial: 'Commercial' },
+      filters: { all: 'All', hospitality: 'Hospitality', residential: 'Residential', commercial: 'Commercial', mixed: 'Mixed-use' },
       empty: 'No projects in this category yet.',
       location: 'Location', year: 'Year', area: 'Area', status: 'Status', type: 'Type',
       view: 'View project',
@@ -145,7 +145,7 @@ export const strings = {
       inquireSimilar: 'Discuss a similar project',
       sqm: 'm²',
     },
-    footer: { rights: 'All rights reserved', city: 'Medina, Saudi Arabia' },
+    footer: { rights: 'All rights reserved', city: 'Madinah, Saudi Arabia' },
   },
 } as const;
 

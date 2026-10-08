@@ -7,7 +7,8 @@ import ProjectOverlay from './ProjectOverlay.astro';
 interface Props { lang: Lang }
 const { lang } = Astro.props;
 const s = t(lang).projects;
-const cats: ('all' | Category)[] = ['all', 'hospitality', 'residential', 'commercial'];
+const used = new Set(projects.map((p) => p.category));
+const cats: ('all' | Category)[] = ['all', ...(['hospitality', 'residential', 'commercial', 'mixed'] as Category[]).filter((c) => used.has(c))];
 const counts = Object.fromEntries(cats.map((c) => [c, c === 'all' ? projects.length : projects.filter((p) => p.category === c).length]));
 ---
 <section class="pj-head">

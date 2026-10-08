@@ -9,7 +9,11 @@ const c = p[lang];
 <article class:list={['card', size]} data-category={p.category} style={`--i:${i % 3}`}>
   <a href={`/${lang}/projects/#${p.slug}`} class="hit" data-project={p.slug} aria-label={`${s.projects.view}: ${c.name}`}>
     <div class="media" data-reveal-img data-media>
-      <img src={p.images[0]} alt="" loading={eager ? 'eager' : 'lazy'} decoding="async" width="1600" height="1000" />
+      <img
+        src={p.thumb ?? p.images[0]}
+        srcset={p.thumb ? `${p.thumb} 960w, ${p.images[0]} 2000w` : undefined}
+        sizes={size === 'lg' ? '(max-width: 760px) 100vw, 66vw' : '(max-width: 760px) 100vw, 50vw'}
+        alt={c.name} loading={eager ? 'eager' : 'lazy'} decoding="async" width="1600" height="1100" />
       {p.placeholder && <span class="ph-tag">{lang === 'ar' ? 'صورة مؤقتة' : 'Placeholder'}</span>}
     </div>
     <div class="meta" data-reveal>
