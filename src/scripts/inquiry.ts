@@ -1,8 +1,12 @@
-// Inquiry drawer (open/close) and inquiry form submission, shared by the panel and the Home section.
+// Inquiry drawer (open/close, Back to close, swipe to dismiss) and the inquiry form, shared by the
+// panel and the Home section.
 import { lockScroll, unlockScroll } from './scroll-lock';
+import { openLayer, requestClose, onClose, released } from './layers';
+import { spring, project, rubberband, VelocityTracker } from './physics';
 
 const panel = document.querySelector<HTMLDialogElement>('[data-inquiry-panel]');
 const isAr = document.documentElement.lang === 'ar';
+const reduceMotion = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 export interface InquiryPrefill { typeIndex?: number; message?: string }
 
@@ -17,18 +21,91 @@ function openPanel(prefill?: InquiryPrefill) {
   }
   panel.showModal();
   lockScroll();
+  openLayer('inquiry'); // Back closes the panel
 }
 
-function closePanel() {
+/** The actual close. `gone`: already swiped off screen, so skip the CSS slide-out. */
+function closeNow(gone = false) {
   if (!panel?.open) return;
-  panel.close();
+  if (gone) {
+    panel.dataset.gone = '';
+    panel.close();
+    requestAnimationFrame(() => { delete panel.dataset.gone; panel.style.transform = ''; panel.style.removeProperty('--drag-p'); });
+  } else {
+    panel.style.transform = ''; panel.style.removeProperty('--drag-p');
+    panel.close();
+  }
 }
 
 if (panel) {
-  panel.addEventListener('close', unlockScroll);
-  panel.querySelector('[data-close]')?.addEventListener('click', closePanel);
+  let swiped = false;
+  onClose('inquiry', () => { const g = swiped; swiped = false; closeNow(g); });
+  panel.addEventListener('close', () => { unlockScroll(); released('inquiry'); });
+  panel.querySelector('[data-close]')?.addEventListener('click', () => requestClose('inquiry'));
+  panel.addEventListener('cancel', (e) => { e.preventDefault(); requestClose('inquiry'); }); // Escape
   // Light dismiss: a click that lands on the backdrop (the dialog box itself, outside its content)
-  panel.addEventListener('click', (e) => { if (e.target === panel) closePanel(); });
+  panel.addEventListener('click', (e) => { if (e.target === panel) requestClose('inquiry'); });
+
+  // ---------- Swipe toward its edge to dismiss (touch / pen) ----------
+  // Dismisses the way it came in: right in English, left in Arabic (spatial consistency).
+  const dir = document.documentElement.dir === 'rtl' ? -1 : 1;
+  const SLOP = 10;
+  const tracker = new VelocityTracker();
+  let id: number | null = null, sx = 0, sy = 0, decided = false, dragging = false, offset = 0, x = 0;
+  let settle: { stop: () => void } | null = null;
+  const W = () => panel.getBoundingClientRect().width;
+  const paint = (v: number) => {
+    panel.style.transform = `translateX(${v * dir}px)`;
+    panel.style.setProperty('--drag-p', String(1 - Math.max(0, Math.min(v / W(), 1))));
+  };
+
+  panel.addEventListener('pointerdown', (e) => {
+    if (e.pointerType === 'mouse' || id !== null) return;
+    // Only the field being typed in keeps its own horizontal drags (caret moves, text selection);
+    // a swipe that merely starts on an unfocused field still dismisses the panel.
+    const field = (e.target as Element).closest('input, textarea, select, [contenteditable]');
+    if (field && field === document.activeElement) return;
+    settle?.stop(); settle = null;
+    id = e.pointerId; sx = e.clientX; sy = e.clientY; decided = false; dragging = false;
+    tracker.reset(e.timeStamp, 0);
+  });
+  panel.addEventListener('pointermove', (e) => {
+    if (e.pointerId !== id) return;
+    const dx = (e.clientX - sx) * dir, dy = e.clientY - sy;
+    if (!decided) {
+      if (Math.hypot(dx, dy) < SLOP) return;
+      decided = true;
+      dragging = Math.abs(dx) > Math.abs(dy) * 1.2; // horizontal intent only; vertical stays a scroll
+      if (!dragging) { id = null; return; }
+      offset = Math.sign(dx) * SLOP;
+      panel.setPointerCapture(e.pointerId);
+      panel.style.transition = 'none';
+      panel.style.willChange = 'transform';
+    }
+    if (!dragging) return;
+    const raw = dx - offset;
+    x = raw >= 0 ? raw : rubberband(raw, W()); // pulling it further open resists
+    tracker.add(e.timeStamp, raw);
+    paint(x);
+  });
+  const end = (e: PointerEvent) => {
+    if (e.pointerId !== id) return;
+    id = null;
+    if (!dragging) return;
+    dragging = false;
+    panel.style.willChange = '';
+    const v = tracker.velocity();
+    if (x + project(v) > W() * 0.5) {
+      if (reduceMotion()) { swiped = true; requestClose('inquiry'); return; }
+      settle = spring(x, W(), Math.max(v, 500), { damping: 1, response: 0.3 }, paint);
+      settle.done.then(() => { swiped = true; panel.style.transition = ''; requestClose('inquiry'); });
+    } else {
+      settle = spring(x, 0, v, { damping: Math.abs(v) > 300 ? 0.85 : 1, response: 0.35 }, paint);
+      settle.done.then(() => { panel.style.transition = ''; panel.style.transform = ''; panel.style.removeProperty('--drag-p'); });
+    }
+  };
+  panel.addEventListener('pointerup', end);
+  panel.addEventListener('pointercancel', end);
 }
 
 document.addEventListener('click', (e) => {
@@ -48,13 +125,24 @@ function swapLabel(btn: HTMLButtonElement, text: string) {
   setTimeout(() => { label.textContent = text; btn.classList.remove('is-swapping'); }, 180);
 }
 
+// Inline validation: a field is checked when the visitor leaves it (blur) and re-checked as they
+// type once it has been flagged, so the message disappears the moment the entry becomes valid.
+function fieldOk(el: HTMLInputElement | HTMLTextAreaElement) {
+  return (!el.required || el.value.trim() !== '') && el.checkValidity();
+}
+function showState(el: HTMLInputElement | HTMLTextAreaElement, ok: boolean) {
+  const field = el.closest('.field');
+  field?.classList.toggle('is-invalid', !ok);
+  if (ok) el.removeAttribute('aria-invalid'); else el.setAttribute('aria-invalid', 'true');
+  const msg = field?.querySelector<HTMLElement>('[data-err]');
+  if (msg) msg.hidden = ok;
+}
 function validate(form: HTMLFormElement) {
   let firstBad: HTMLInputElement | null = null;
   form.querySelectorAll<HTMLInputElement>('input:not([type=hidden]):not([type=radio]):not([type=checkbox]), textarea').forEach((el) => {
     el.value = el.value.trim();
-    const ok = (!el.required || el.value !== '') && el.checkValidity();
-    el.closest('.field')?.classList.toggle('is-invalid', !ok);
-    el.setAttribute('aria-invalid', String(!ok));
+    const ok = fieldOk(el);
+    showState(el, ok);
     if (!ok && !firstBad) firstBad = el;
   });
   if (firstBad) (firstBad as HTMLInputElement).focus();
@@ -68,12 +156,15 @@ document.querySelectorAll<HTMLFormElement>('[data-inquiry-form]').forEach((form)
   const { endpoint, mailto, msgSending, msgSent, msgError, msgWait } = form.dataset;
   let lastSent = 0;
 
+  form.addEventListener('focusout', (e) => {
+    const el = e.target as HTMLInputElement;
+    if (!el.matches?.('input[required], textarea[required]') || el.value === '' ) return; // don't scold an untouched field
+    el.value = el.value.trim();
+    showState(el, fieldOk(el));
+  });
   form.addEventListener('input', (e) => {
-    const field = (e.target as Element).closest('.field');
-    if (field?.classList.contains('is-invalid')) {
-      const el = field.querySelector<HTMLInputElement>('input, textarea');
-      if (el && el.value.trim() && el.checkValidity()) { field.classList.remove('is-invalid'); el.removeAttribute('aria-invalid'); }
-    }
+    const el = e.target as HTMLInputElement;
+    if (el.closest('.field')?.classList.contains('is-invalid')) showState(el, fieldOk(el));
   });
 
   form.addEventListener('submit', async (e) => {

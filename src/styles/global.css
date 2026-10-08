@@ -17,6 +17,13 @@
   --step-3: clamp(1.75rem, 1.4rem + 1.5vw, 2.5rem);     /* 28–40px: page titles */
   --step-4: clamp(2rem, 1.5rem + 2vw, 3rem);            /* 32–48px: home hero only */
 
+  /* Tracking and leading change with size (Latin only; Arabic is never tracked).
+     Large text tightens, small text opens up slightly; leading loosens as text gets smaller. */
+  --track-display: -0.02em;  --lead-display: 1.1;   /* step-3, step-4 */
+  --track-heading: -0.012em; --lead-heading: 1.25;  /* step-2 */
+  --track-title: -0.005em;   --lead-title: 1.35;    /* step-1 headings */
+  --track-small: 0.01em;     --lead-small: 1.5;     /* step--1 */
+
   /* Spacing scale: every margin, gap and padding uses one of these (8px base). */
   --sp-1: 0.5rem;   /*  8px */
   --sp-2: 1rem;     /* 16px */
@@ -30,7 +37,8 @@
   --gutter: clamp(var(--sp-2), 4vw, var(--sp-5));
   --section: clamp(var(--sp-6), 9vw, 7.5rem); /* 64–120px between sections */
   --max: 1440px;
-  --header-h: 72px;
+  --header-h: 4.5rem; /* rem, so the bar grows with the visitor's text-size setting */
+  --tap: 2.75rem;     /* 44px minimum touch target (Apple HIG) */
 
   /* Motion (Emil Kowalski curves) */
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
@@ -40,6 +48,14 @@
   --dur-ui: 220ms;
   --dur-drawer: 460ms;
 
+}
+
+/* Arabic: no tracking ever, and more leading at every size (taller letterforms and diacritics) */
+html[lang='ar'] {
+  --track-display: 0; --lead-display: 1.4;
+  --track-heading: 0; --lead-heading: 1.45;
+  --track-title: 0;   --lead-title: 1.55;
+  --track-small: 0;   --lead-small: 1.7;
 }
 
 /* ---------- Color schemes ----------
@@ -98,6 +114,22 @@
   color-scheme: light;
 }
 
+/* ---------- Visitor settings: more contrast, less transparency ---------- */
+@media (prefers-contrast: more) {
+  :root, :root:not([data-theme='dark']), :root[data-theme='light'] {
+    --ink-3: var(--ink-2);
+    --line: rgb(var(--ink-rgb) / 0.32);
+    --line-strong: rgb(var(--ink-rgb) / 0.6);
+    --hero-scrim: 0.88;
+  }
+}
+@media (prefers-reduced-transparency: reduce) {
+  :root, :root:not([data-theme='dark']), :root[data-theme='light'] {
+    --hero-scrim: 0.9;
+    --backdrop: rgb(0 0 0 / 0.75);
+  }
+}
+
 /* ---------- Reset & mobile baseline ---------- */
 *, *::before, *::after { box-sizing: border-box; }
 html {
@@ -122,10 +154,18 @@ html[lang='ar'] body { font-family: var(--font-ar); line-height: 1.8; }
 img, svg { display: block; max-width: 100%; }
 a { color: inherit; text-decoration: none; }
 h1, h2, h3, p { margin: 0; }
-h1, h2, h3 { font-weight: 500; line-height: 1.2; letter-spacing: -0.01em; text-wrap: balance; }
-html[lang='ar'] h1, html[lang='ar'] h2, html[lang='ar'] h3 { letter-spacing: 0; line-height: 1.4; }
+h1, h2, h3 { font-weight: 500; line-height: var(--lead-heading); letter-spacing: var(--track-heading); text-wrap: balance; }
+h3 { line-height: var(--lead-title); letter-spacing: var(--track-title); }
+html[lang='ar'] h1, html[lang='ar'] h2, html[lang='ar'] h3 { letter-spacing: 0; line-height: 1.45; }
+/* Size-specific tracking: applied by size class so it is right wherever the size is used */
+.t-display { letter-spacing: var(--track-display); line-height: var(--lead-display); }
+.t-small { font-size: var(--step--1); letter-spacing: var(--track-small); line-height: var(--lead-small); }
+html[lang='ar'] .t-display { letter-spacing: 0; line-height: 1.35; }
+/* Arabic letters join; letter-spacing breaks them. Never track Arabic, whatever a component sets. */
+html[lang='ar'] body :not(:lang(en)) { letter-spacing: 0 !important; }
+html[lang='ar'] .t-small { letter-spacing: 0; font-size: 0.9375rem; line-height: 1.7; }
 p { text-wrap: pretty; }
-button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+button { font: inherit; letter-spacing: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
 input, textarea, select { font: inherit; font-size: 16px; color: inherit; }
 
 button, a, [role='button'], label {
@@ -157,6 +197,13 @@ button, [role='button'], .btn, .chip {
 .two-col { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: var(--sp-4) var(--sp-5); align-items: start; }
 @media (max-width: 860px) { .two-col { grid-template-columns: 1fr; } }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+/* ---------- Touch: 44px targets and feedback the instant a finger lands ---------- */
+@media (pointer: coarse) {
+  .link-line { display: inline-flex; align-items: center; min-block-size: var(--tap); min-inline-size: var(--tap); }
+}
+/* Highlight on press (touch-down), not on release. No transition in, so it is immediate. */
+.link-line:active, .as-link:active { opacity: 0.55; }
 
 /* ---------- Buttons ---------- */
 .btn {
@@ -206,4 +253,7 @@ html:active-view-transition-type(filter)::view-transition-new(root) { animation:
 
 @media (prefers-reduced-motion: reduce) {
   ::view-transition-old(*), ::view-transition-new(*), ::view-transition-group(*) { animation-duration: 0.01ms !important; }
+  /* A light/dark switch still fades: no movement, and it avoids an abrupt brightness jump */
+  html:active-view-transition-type(theme)::view-transition-old(root),
+  html:active-view-transition-type(theme)::view-transition-new(root) { animation-duration: 220ms !important; }
 }

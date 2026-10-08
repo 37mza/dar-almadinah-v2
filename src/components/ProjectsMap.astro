@@ -52,7 +52,7 @@ const legend = (['hospitality', 'residential', 'commercial', 'mixed'] as const).
   }
   @media (max-width: 640px) { .map { block-size: 64svh; min-block-size: 360px; } }
   .empty { color: var(--ink-3); }
-  .map-foot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--sp-1) var(--sp-3); color: var(--ink-2); font-size: var(--step--1); }
+  .map-foot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--sp-1) var(--sp-3); color: var(--ink-2); font-size: var(--step--1); letter-spacing: var(--track-small); line-height: var(--lead-small); }
   :global(html[lang='ar']) .map-foot { font-size: 0.95rem; }
   .legend { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: var(--sp-1) var(--sp-3); }
   .legend li { display: inline-flex; align-items: center; gap: 0.5rem; }
@@ -68,11 +68,16 @@ const legend = (['hospitality', 'residential', 'commercial', 'mixed'] as const).
   :global(.mapboxgl-popup-tip) { border-top-color: var(--bg) !important; border-bottom-color: var(--bg) !important; }
   :global(.mapboxgl-popup-close-button) { color: var(--ink-2); font-size: 1.25rem; inline-size: 2rem; block-size: 2rem; inset-inline-end: 0; inset-inline-start: auto; }
   :global(.pin-pop h3) { font-size: var(--step-1); font-weight: 500; padding-inline-end: var(--sp-4); }
-  :global(.pin-pop .cat) { color: var(--ink-3); font-size: var(--step--1); margin-block: 0.25rem var(--sp-1); }
-  :global(.pin-pop dl) { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 0.25rem var(--sp-2); font-size: var(--step--1); }
+  :global(.pin-pop .cat) { color: var(--ink-3); font-size: var(--step--1); letter-spacing: var(--track-small); line-height: var(--lead-small); margin-block: 0.25rem var(--sp-1); }
+  :global(.pin-pop dl) { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 0.25rem var(--sp-2); font-size: var(--step--1); letter-spacing: var(--track-small); line-height: var(--lead-small); }
   :global(.pin-pop dt) { color: var(--ink-3); }
   :global(.pin-pop dd) { margin: 0; }
-  :global(.pin-pop a) { display: inline-block; margin-block-start: var(--sp-2); color: var(--red-ink); font-size: var(--step--1); }
+  :global(.pin-pop a) { display: inline-block; margin-block-start: var(--sp-2); color: var(--red-ink); font-size: var(--step--1); letter-spacing: var(--track-small); line-height: var(--lead-small); }
   :global(.map-style-btn) { background: var(--bg) !important; color: var(--ink) !important; font: 500 0.8125rem/1 var(--font-en) !important; padding: 0 0.75rem !important; inline-size: auto !important; min-inline-size: 2.25rem; block-size: 2.25rem !important; }
   :global(html[lang='ar'] .map-style-btn) { font-family: var(--font-ar) !important; }
+  /* 44px controls for fingers */
+  @media (pointer: coarse) {
+    :global(.mapboxgl-ctrl-group button) { inline-size: var(--tap) !important; block-size: var(--tap) !important; }
+    :global(.map-style-btn) { block-size: var(--tap) !important; }
+  }
 </style>

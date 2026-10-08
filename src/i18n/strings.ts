@@ -63,6 +63,7 @@ export const strings = {
       whatsapp: 'واتساب',
       close: 'إغلاق',
       optional: 'اختياري',
+      errName: 'اكتب اسمك.', errEmail: 'اكتب عنوان بريد إلكتروني صحيحًا.', errPhone: 'اكتب رقم جوال صحيحًا.',
     },
     projects: {
       title: 'المشاريع',
@@ -148,6 +149,7 @@ export const strings = {
       whatsapp: 'WhatsApp',
       close: 'Close',
       optional: 'optional',
+      errName: 'Enter your name.', errEmail: 'Enter a valid email, like name@company.com.', errPhone: 'Enter a valid mobile number, like +966 5X XXX XXXX.',
     },
     projects: {
       title: 'Projects',

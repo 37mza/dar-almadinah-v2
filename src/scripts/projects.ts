@@ -2,6 +2,8 @@
 // The stage is clipped to the card's rectangle and opened to the full viewport with clip-path,
 // while the cover image is counter-transformed so its crop matches the card exactly at the start.
 import { lockScroll, unlockScroll } from './scroll-lock';
+import { openLayer, requestClose, onClose } from './layers';
+import { spring, project, rubberband, VelocityTracker } from './physics';
 
 interface ProjectData {
   images: string[]; name: string; summary?: string; category: string;
@@ -82,7 +84,7 @@ if (dialog) {
 
   function cancelAnims() { anims.forEach((a) => a.cancel()); anims = []; }
 
-  async function open(slug: string, card: HTMLElement | null) {
+  async function open(slug: string, card: HTMLElement | null, { fromSharedLink = false } = {}) {
     if (!data[slug] || dialog!.open) return;
     current = { slug, card };
     fill(slug);
@@ -91,7 +93,8 @@ if (dialog) {
     dialog!.showModal();
     lockScroll();
     stage.scrollTop = 0;
-    history.replaceState(null, '', `#${slug}`);
+    // Own history entry, so Back closes the view. A shared #link already sits on its own entry.
+    if (!fromSharedLink) openLayer('project', `#${slug}`);
 
     const from = card && !reduce() ? startState(card) : null;
     if (from) {
@@ -109,7 +112,7 @@ if (dialog) {
     }
   }
 
-  async function close({ instant = false } = {}) {
+  async function close({ instant = false, gone = false } = {}) {
     if (!dialog!.open || closing || !current) return;
     closing = true;
     const { card } = current;
@@ -118,7 +121,10 @@ if (dialog) {
     dialog!.classList.add('is-leaving');
     dialog!.classList.remove('is-ready');
 
-    if (running && !instant) {
+    if (gone) {
+      // Already swiped off screen: nothing left to animate
+      cancelAnims();
+    } else if (running && !instant) {
       // Interrupted mid-open: reverse from exactly where it is, at the same speed
       anims.forEach((a) => a.reverse());
       await Promise.all(anims.map((a) => a.finished.catch(() => {})));
@@ -139,6 +145,7 @@ if (dialog) {
     }
 
     if (card) card.style.visibility = '';
+    stage.style.transform = ''; stage.style.opacity = ''; stage.style.borderRadius = '';
     dialog!.close();
     cancelAnims();
     unlockScroll();
@@ -154,13 +161,78 @@ if (dialog) {
     open(link.dataset.project!, link.querySelector<HTMLElement>('[data-media]'));
   });
 
-  closeBtn.addEventListener('click', () => close());
+  // Every way of closing goes through history (Back, button, Escape, swipe), so they all behave alike
+  let closeMode: { instant?: boolean; gone?: boolean } = {};
+  onClose('project', () => { const m = closeMode; closeMode = {}; close(m); });
+  closeBtn.addEventListener('click', () => requestClose('project'));
   // Escape is a keyboard action: close quickly with a short fade, no geometry animation
-  dialog.addEventListener('cancel', (e) => { e.preventDefault(); close({ instant: true }); });
+  dialog.addEventListener('cancel', (e) => { e.preventDefault(); closeMode = { instant: true }; requestClose('project'); });
+
+  // ---------- Swipe down to dismiss (touch), when the view is scrolled to the top ----------
+  // 1:1 tracking with a 10 px decision threshold; release decides from projected momentum,
+  // then a spring continues at the finger's velocity. The view shrinks slightly as it is
+  // pulled, hinting that it will return to the page.
+  const SLOP = 10;
+  const tracker = new VelocityTracker();
+  let startX = 0, startY = 0, decided = false, dragging = false, offset = 0, y = 0;
+  let settle: { stop: () => void } | null = null;
+  const H = () => window.innerHeight;
+  const paint = (v: number) => {
+    const p = Math.max(0, Math.min(v / H(), 1));
+    stage.style.transform = `translateY(${v}px) scale(${1 - p * 0.08})`;
+    stage.style.borderRadius = `${Math.min(p * 120, 16)}px`;
+  };
+
+  stage.addEventListener('touchstart', (e) => {
+    if (e.touches.length !== 1 || closing || anims.some((a) => a.playState === 'running')) { decided = true; dragging = false; return; }
+    settle?.stop(); settle = null;
+    startX = e.touches[0].clientX; startY = e.touches[0].clientY;
+    decided = false; dragging = false;
+    tracker.reset(e.timeStamp, 0);
+  }, { passive: true });
+
+  stage.addEventListener('touchmove', (e) => {
+    if (e.touches.length !== 1) return;
+    const dx = e.touches[0].clientX - startX, dy = e.touches[0].clientY - startY;
+    if (!decided) {
+      if (Math.hypot(dx, dy) < SLOP) return;
+      decided = true;
+      dragging = stage.scrollTop <= 0 && dy > 0 && Math.abs(dy) > Math.abs(dx) * 1.2;
+      offset = Math.sign(dy) * SLOP; // no jump when tracking starts
+      if (dragging) { stage.style.overflowY = 'hidden'; cancelAnims(); }
+    }
+    if (!dragging) return;
+    e.preventDefault();
+    const raw = dy - offset;
+    y = raw >= 0 ? raw : rubberband(raw, H()); // pulling back up past the start resists
+    tracker.add(e.timeStamp, raw);
+    paint(y);
+  }, { passive: false });
+
+  const endDrag = () => {
+    if (!dragging) return;
+    dragging = false;
+    stage.style.overflowY = '';
+    const v = tracker.velocity();
+    const landing = y + project(v);
+    if (landing > H() * 0.3) {
+      // Commit: continue downward at the finger's speed, then close without a second animation
+      if (reduce()) { closeMode = { instant: true }; requestClose('project'); return; }
+      stage.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 260, easing: 'ease', fill: 'forwards' });
+      settle = spring(y, H(), Math.max(v, 600), { damping: 1, response: 0.3 }, paint);
+      settle.done.then(() => { closeMode = { gone: true }; requestClose('project'); });
+    } else {
+      // Cancel: back to rest; a little give only because the finger carried momentum
+      settle = spring(y, 0, v, { damping: Math.abs(v) > 300 ? 0.85 : 1, response: 0.35 }, paint);
+      settle.done.then(() => { stage.style.transform = ''; stage.style.borderRadius = ''; });
+    }
+  };
+  stage.addEventListener('touchend', endDrag);
+  stage.addEventListener('touchcancel', endDrag);
 
   inquireBtn.addEventListener('click', async () => {
     const slug = current?.slug;
-    await close({ instant: true });
+    await close({ instant: true }); // the inquiry panel takes over this history entry (no extra Back step)
     if (!slug) return;
     const cat = document.querySelector<HTMLElement>(`a[data-project="${slug}"]`)?.closest<HTMLElement>('[data-category]')?.dataset.category;
     const typeIndex = { hospitality: 0, residential: 1, commercial: 2, mixed: 3 }[cat ?? ''] as number | undefined;
@@ -174,6 +246,6 @@ if (dialog) {
   const fromHash = decodeURIComponent(location.hash.slice(1));
   if (fromHash && data[fromHash]) {
     const card = document.querySelector<HTMLElement>(`a[data-project="${CSS.escape(fromHash)}"] [data-media]`);
-    requestAnimationFrame(() => open(fromHash, card));
+    requestAnimationFrame(() => open(fromHash, card, { fromSharedLink: true }));
   }
 }

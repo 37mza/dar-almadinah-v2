@@ -55,10 +55,13 @@ const s = t(lang).inquiry;
     background: rgba(0, 0, 0, 0);
     transition: background-color 260ms ease, display 260ms allow-discrete, overlay 260ms allow-discrete;
   }
-  .drawer[open]::backdrop { background: var(--backdrop); transition-duration: 400ms; }
+  .drawer[open]::backdrop { background: var(--backdrop); transition-duration: 400ms; opacity: var(--drag-p, 1); }
+  /* Swiped away: already off screen, so no slide-out */
+  .drawer[data-gone], .drawer[data-gone]::backdrop { transition: none !important; }
   @starting-style { .drawer[open]::backdrop { background: rgba(0, 0, 0, 0); } }
 
   .drawer-inner {
+    touch-action: pan-y; /* vertical scroll stays native; horizontal drags reach the swipe handler */
     block-size: 100%;
     overflow-y: auto;
     overscroll-behavior: contain;

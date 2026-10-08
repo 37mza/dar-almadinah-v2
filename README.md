@@ -48,6 +48,17 @@ Deliberately plain, to avoid the look of template / AI-generated sites:
 - **Motion is only where it explains something:** the project card opening into its full view, the inquiry drawer,
   the filter reflow, button press feedback, and a 220 ms crossfade when switching light/dark.
   All of it respects `prefers-reduced-motion`.
+- **Interaction (after Apple's HIG / "Designing Fluid Interfaces"):**
+  - Every tappable thing is at least 44px on touch screens (`--tap`), and highlights on press, not on release.
+  - The project view and the inquiry panel each get a browser-history entry: Back (or the Android back
+    gesture) closes them (`src/scripts/layers.ts`).
+  - Swipe to dismiss on touch: the project view swipes down, the inquiry panel swipes toward its own edge
+    (right in English, left in Arabic). Tracking is 1:1, the decision comes from projected momentum, and a
+    spring continues at the finger's speed; pulling the wrong way rubber-bands (`src/scripts/physics.ts`).
+  - Tracking and leading change with size (`--track-*`, `--lead-*`); Arabic is never letter-spaced.
+  - Form fields are checked when you leave them, with a written message, not only a red line.
+  - Honors increased contrast, reduced transparency and reduced motion settings.
+  - Not adopted on purpose: translucent/blurred bars. The site keeps solid surfaces by design decision.
 
 ## Managing content (CMS)
 

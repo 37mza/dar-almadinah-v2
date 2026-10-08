@@ -39,13 +39,13 @@ const initials = (n: string) => n.split(/\s+/).filter(Boolean).slice(0, 2).map((
   @media (max-width: 640px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--sp-4) var(--sp-2); } }
   .photo { aspect-ratio: 4 / 5; background: var(--bg-raised); border-radius: 2px; overflow: hidden; display: grid; place-items: center; margin-block-end: var(--sp-2); }
   .photo img { inline-size: 100%; block-size: 100%; object-fit: cover; }
-  .initials { font-size: var(--step-3); color: var(--ink-3); font-weight: 500; }
+  .initials { font-size: var(--step-3); letter-spacing: var(--track-display); line-height: var(--lead-display); color: var(--ink-3); font-weight: 500; }
   /* Designation first (what an investor scans for), then the name */
-  .role { font-size: var(--step--1); color: var(--ink-3); }
+  .role { font-size: var(--step--1); letter-spacing: var(--track-small); line-height: var(--lead-small); color: var(--ink-3); }
   :global(html[lang='ar']) .role { font-size: 0.95rem; }
   .name { font-size: var(--step-1); font-weight: 500; margin-block-start: 0.25rem; }
-  .specialty { color: var(--ink-2); font-size: var(--step--1); margin-block-start: var(--sp-1); }
+  .specialty { color: var(--ink-2); font-size: var(--step--1); letter-spacing: var(--track-small); line-height: var(--lead-small); margin-block-start: var(--sp-1); }
   :global(html[lang='ar']) .specialty { font-size: 0.95rem; }
-  .creds { color: var(--red-ink); font-size: var(--step--1); margin-block-start: 0.25rem; font-family: var(--font-en); }
+  .creds { color: var(--red-ink); font-size: var(--step--1); letter-spacing: var(--track-small); line-height: var(--lead-small); margin-block-start: 0.25rem; font-family: var(--font-en); }
   :global(html[lang='ar']) .creds { font-family: var(--font-ar); font-size: 0.95rem; }
 </style>

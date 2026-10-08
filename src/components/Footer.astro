@@ -44,8 +44,9 @@ const year = new Date().getFullYear();
   .cols { display: flex; gap: var(--sp-6); flex-wrap: wrap; }
   .col { display: grid; gap: var(--sp-1); align-content: start; justify-items: start; color: var(--ink-2); }
   .as-link { text-align: start; color: inherit; }
-  .bottom { margin-block-start: var(--sp-6); display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--sp-1) var(--sp-4); color: var(--ink-3); font-size: var(--step--1); }
+  @media (pointer: coarse) { .col { gap: 0; } }
+  .bottom { margin-block-start: var(--sp-6); display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--sp-1) var(--sp-4); color: var(--ink-3); font-size: var(--step--1); letter-spacing: var(--track-small); line-height: var(--lead-small); }
   :global(html[lang='ar']) .bottom { font-size: 0.9rem; }
-  .legal { margin-block-start: var(--sp-2); display: flex; flex-wrap: wrap; gap: var(--sp-1) var(--sp-4); color: var(--ink-3); font-size: var(--step--1); }
+  .legal { margin-block-start: var(--sp-2); display: flex; flex-wrap: wrap; gap: var(--sp-1) var(--sp-4); color: var(--ink-3); font-size: var(--step--1); letter-spacing: var(--track-small); line-height: var(--lead-small); }
   :global(html[lang='ar']) .legal { font-size: 0.9rem; }
 </style>

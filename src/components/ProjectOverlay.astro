@@ -82,10 +82,10 @@ const data = Object.fromEntries(
   .po-grid { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 4fr); gap: var(--sp-5); align-items: end; }
   @media (max-width: 860px) { .po-grid { grid-template-columns: 1fr; } }
   .po-head { display: grid; gap: var(--sp-2); justify-items: start; }
-  .po-head h2 { font-size: var(--step-3); }
+  .po-head h2 { font-size: var(--step-3); letter-spacing: var(--track-display); line-height: var(--lead-display); }
   .po-summary { color: var(--ink-2); font-size: var(--step-1); line-height: 1.6; max-inline-size: 48ch; }
   .po-facts { margin: 0; display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-3) var(--sp-4); border-block-start: 1px solid var(--line); padding-block-start: var(--sp-3); }
-  .po-facts dt { color: var(--ink-3); font-size: var(--step--1); }
+  .po-facts dt { color: var(--ink-3); font-size: var(--step--1); letter-spacing: var(--track-small); line-height: var(--lead-small); }
   :global(html[lang='ar']) .po-facts dt { font-size: 0.95rem; }
   .po-facts dd { margin: 0.25rem 0 0; }
   .po-facts [hidden] { display: none; }

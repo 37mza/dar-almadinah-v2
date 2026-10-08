@@ -58,7 +58,7 @@ const cats: ('all' | Category)[] = ['all', ...(['hospitality', 'residential', 'c
 
 <style>
   .pj-head { padding-block: calc(var(--header-h) + var(--sp-6)) var(--sp-5); }
-  .pj-title { font-size: var(--step-3); }
+  .pj-title { font-size: var(--step-3); letter-spacing: var(--track-display); line-height: var(--lead-display); }
   :global(html[lang='ar']) .pj-title { font-weight: 600; }
   .pj-lede { margin-block-start: var(--sp-2); color: var(--ink-2); max-inline-size: 52ch; font-size: var(--step-1); line-height: 1.6; }
 
@@ -67,12 +67,12 @@ const cats: ('all' | Category)[] = ['all', ...(['hospitality', 'residential', 'c
   .filters { display: flex; flex-wrap: wrap; gap: 0 var(--sp-4); }
   /* List / Map: a small two-part switch */
   .views { display: inline-flex; margin-block-end: var(--sp-1); box-shadow: inset 0 0 0 1px var(--line-strong); border-radius: 2px; }
-  .view { min-block-size: 2.5rem; padding-inline: var(--sp-2); color: var(--ink-2); font-size: var(--step--1); transition: background-color 200ms ease, color 200ms ease; }
+  .view { min-block-size: var(--tap); padding-inline: var(--sp-2); color: var(--ink-2); font-size: var(--step--1); letter-spacing: var(--track-small); line-height: var(--lead-small); transition: background-color 200ms ease, color 200ms ease; }
   :global(html[lang='ar']) .view { font-size: var(--step-0); }
   .view[aria-pressed='true'] { background: var(--ink); color: var(--bg); }
   @media (hover: hover) and (pointer: fine) { .view[aria-pressed='false']:hover { color: var(--ink); } }
   .filter {
-    position: relative; min-block-size: 2.75rem; padding-block: var(--sp-1);
+    position: relative; min-block-size: var(--tap); min-inline-size: var(--tap); padding-block: var(--sp-1);
     color: var(--ink-2); font-size: var(--step-0);
     transition: color 200ms ease;
   }
@@ -81,6 +81,7 @@ const cats: ('all' | Category)[] = ['all', ...(['hospitality', 'residential', 'c
     background: var(--red); transform: scaleX(0); transition: transform 220ms var(--ease-out);
   }
   .filter[aria-pressed='true'] { color: var(--ink); }
+  .filter:active, .view:active { opacity: 0.55; }
   .filter[aria-pressed='true']::after { transform: scaleX(1); }
   @media (hover: hover) and (pointer: fine) { .filter[aria-pressed='false']:hover { color: var(--ink); } }
   @media (prefers-reduced-motion: reduce) { .filter::after { transition: none; } }

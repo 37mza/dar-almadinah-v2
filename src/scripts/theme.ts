@@ -1,6 +1,7 @@
 // Light / dark toggle.
 // Default follows the device setting; a click stores an explicit choice in localStorage.
-// The switch crossfades in 220 ms (View Transitions). Reduced motion: instant switch.
+// The switch crossfades in 220 ms (View Transitions), also with reduced motion: a fade has no
+// movement and avoids an abrupt brightness jump.
 const root = document.documentElement;
 const toggle = document.querySelector<HTMLButtonElement>('[data-theme-toggle]');
 const systemLight = matchMedia('(prefers-color-scheme: light)');
@@ -32,8 +33,7 @@ function apply(scheme: Scheme) {
 
 toggle?.addEventListener('click', () => {
   const next: Scheme = current() === 'light' ? 'dark' : 'light';
-  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (!document.startViewTransition || !supportsTypes || reduce) { apply(next); return; }
+  if (!document.startViewTransition || !supportsTypes) { apply(next); return; }
 
   document.startViewTransition({ update: () => apply(next), types: ['theme'] });
 });
