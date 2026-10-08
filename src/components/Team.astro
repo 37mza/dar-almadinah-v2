@@ -1,0 +1,51 @@
+---
+// Team: designation, name, portrait and specialty, from the CMS (Office > Team). Hidden when empty.
+import { t, type Lang } from '../i18n/strings';
+import { team } from '../data/projects';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const s = t(lang);
+const initials = (n: string) => n.split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0]).join('');
+---
+{team.length > 0 && (
+  <section class="section team" id="team" aria-labelledby="team-title">
+    <div class="wrap">
+      <h2 id="team-title" class="sec-title">{s.team.title}</h2>
+      <ul class="grid">
+        {team.map((m) => (
+          <li class="member">
+            <div class="photo">
+              {m.portrait
+                ? <img src={m.portrait} alt={m.name[lang]} loading="lazy" decoding="async" width="640" height="800" />
+                : <span class="initials" aria-hidden="true">{initials(m.name[lang])}</span>}
+            </div>
+            <p class="role">{m.role[lang]}</p>
+            <h3 class="name">{m.name[lang]}</h3>
+            {m.specialty[lang] && <p class="specialty">{m.specialty[lang]}</p>}
+            {m.credentials.length > 0 && (
+              <p class="creds">{m.credentials.map((c) => (s.memberCreds as Record<string, string>)[c] ?? c).join(' · ')}</p>
+            )}
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+)}
+
+<style>
+  .sec-title { margin-block-end: var(--sp-5); }
+  .grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--sp-5) var(--sp-3); }
+  @media (max-width: 960px) { .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  @media (max-width: 640px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--sp-4) var(--sp-2); } }
+  .photo { aspect-ratio: 4 / 5; background: var(--bg-raised); border-radius: 2px; overflow: hidden; display: grid; place-items: center; margin-block-end: var(--sp-2); }
+  .photo img { inline-size: 100%; block-size: 100%; object-fit: cover; }
+  .initials { font-size: var(--step-3); color: var(--ink-3); font-weight: 500; }
+  /* Designation first (what an investor scans for), then the name */
+  .role { font-size: var(--step--1); color: var(--ink-3); }
+  :global(html[lang='ar']) .role { font-size: 0.95rem; }
+  .name { font-size: var(--step-1); font-weight: 500; margin-block-start: 0.25rem; }
+  .specialty { color: var(--ink-2); font-size: var(--step--1); margin-block-start: var(--sp-1); }
+  :global(html[lang='ar']) .specialty { font-size: 0.95rem; }
+  .creds { color: var(--red-ink); font-size: var(--step--1); margin-block-start: 0.25rem; font-family: var(--font-en); }
+  :global(html[lang='ar']) .creds { font-family: var(--font-ar); font-size: 0.95rem; }
+</style>

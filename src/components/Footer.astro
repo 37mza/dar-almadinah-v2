@@ -1,6 +1,7 @@
 ---
 import { t, contact, type Lang } from '../i18n/strings';
 import Wordmark from './Wordmark.astro';
+import { company } from '../data/projects';
 interface Props { lang: Lang }
 const { lang } = Astro.props;
 const s = t(lang);
@@ -18,15 +19,22 @@ const year = new Date().getFullYear();
         </div>
         <div class="col">
           <a href={`/${lang}/projects/`} class="link-line">{s.nav.work}</a>
-          <a href={`/${lang}/#practice`} class="link-line">{s.nav.practice}</a>
+          <a href={`/${lang}/about/`} class="link-line">{s.nav.practice}</a>
           <button type="button" class="link-line as-link" data-inquire>{s.nav.inquire}</button>
         </div>
       </div>
     </div>
     <div class="bottom">
       <span>© {year} {s.firm}. {s.footer.rights}.</span>
-      <span>{s.footer.city}</span>
+      <span>{company.address[lang] ?? s.footer.city}</span>
     </div>
+    {(company.crNumber || company.vatNumber || company.sceNumber) && (
+      <p class="legal">
+        {company.crNumber && <span>{s.footer.cr} <bdi dir="ltr">{company.crNumber}</bdi></span>}
+        {company.vatNumber && <span>{s.footer.vat} <bdi dir="ltr">{company.vatNumber}</bdi></span>}
+        {company.sceNumber && <span>{s.footer.sce} <bdi dir="ltr">{company.sceNumber}</bdi></span>}
+      </p>
+    )}
   </div>
 </footer>
 
@@ -38,4 +46,6 @@ const year = new Date().getFullYear();
   .as-link { text-align: start; color: inherit; }
   .bottom { margin-block-start: var(--sp-6); display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--sp-1) var(--sp-4); color: var(--ink-3); font-size: var(--step--1); }
   :global(html[lang='ar']) .bottom { font-size: 0.9rem; }
+  .legal { margin-block-start: var(--sp-2); display: flex; flex-wrap: wrap; gap: var(--sp-1) var(--sp-4); color: var(--ink-3); font-size: var(--step--1); }
+  :global(html[lang='ar']) .legal { font-size: 0.9rem; }
 </style>

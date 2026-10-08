@@ -1,0 +1,78 @@
+---
+// Map view of every project that has coordinates in the CMS. Loaded only when the visitor opens it.
+import { t, type Lang } from '../i18n/strings';
+import { mapProjects, projects } from '../data/projects';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const s = t(lang);
+const withImages = new Set(projects.map((p) => p.slug));
+const fmt = (n?: number) => (n ? `${n.toLocaleString('en-US')} ${s.projects.sqm}` : undefined);
+// Only what the popup needs. Text is inserted with textContent, never as HTML.
+const points = mapProjects.map((p) => ({
+  slug: p.slug,
+  lng: p.coords!.lng, lat: p.coords!.lat,
+  category: p.category,
+  categoryLabel: s.projects.filters[p.category],
+  name: p[lang].name,
+  status: p[lang].status,
+  year: p.year,
+  plot: fmt(p.plotSqm),
+  bua: fmt(p.areaSqm),
+  metric: p.metric ? `${p.metric.value.toLocaleString('en-US')}` : undefined,
+  metricLabel: p.metric?.label[lang],
+  hasView: withImages.has(p.slug),
+}));
+const labels = {
+  plot: s.map.plot, bua: s.map.bua, completion: s.map.completion, status: s.map.status,
+  view: s.projects.view, satellite: s.map.satellite, streets: s.map.streets,
+};
+const legend = (['hospitality', 'residential', 'commercial', 'mixed'] as const).filter((c) => mapProjects.some((p) => p.category === c));
+---
+<div class="map-wrap" data-map-wrap hidden>
+  <div class="map" data-map role="region" aria-label={s.map.label}></div>
+  {points.length === 0 && <p class="empty">{s.map.empty}</p>}
+  <div class="map-foot">
+    {legend.length > 0 && (
+      <ul class="legend">
+        {legend.map((c) => <li><span class={`dot dot--${c}`} aria-hidden="true"></span>{s.projects.filters[c]}</li>)}
+      </ul>
+    )}
+    <span class="count">{points.length} {s.map.count}</span>
+  </div>
+  <script type="application/json" data-map-data set:html={JSON.stringify({ points, labels, lang })} />
+</div>
+
+<style>
+  .map-wrap { display: grid; gap: var(--sp-2); }
+  .map-wrap[hidden] { display: none; }
+  .map {
+    block-size: min(72svh, 720px); min-block-size: 420px;
+    border-radius: 2px; overflow: hidden; background: var(--bg-raised);
+    /* the map handles its own drag; page scroll still works around it */
+  }
+  @media (max-width: 640px) { .map { block-size: 64svh; min-block-size: 360px; } }
+  .empty { color: var(--ink-3); }
+  .map-foot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--sp-1) var(--sp-3); color: var(--ink-2); font-size: var(--step--1); }
+  :global(html[lang='ar']) .map-foot { font-size: 0.95rem; }
+  .legend { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: var(--sp-1) var(--sp-3); }
+  .legend li { display: inline-flex; align-items: center; gap: 0.5rem; }
+  .dot { inline-size: 0.7rem; block-size: 0.7rem; border-radius: 50%; box-shadow: 0 0 0 2px var(--bg); }
+  .dot--hospitality { background: #ac2027; }
+  .dot--residential { background: #b7802f; }
+  .dot--commercial { background: #2b6a8a; }
+  .dot--mixed { background: #4d7a4f; }
+  .count { color: var(--ink-3); }
+
+  /* Mapbox popup and controls, restyled to match the site */
+  :global(.mapboxgl-popup-content) { background: var(--bg); color: var(--ink); border-radius: 2px; padding: var(--sp-2) var(--sp-3) var(--sp-2); box-shadow: 0 8px 30px rgb(0 0 0 / 0.25); font-family: inherit; min-inline-size: 220px; }
+  :global(.mapboxgl-popup-tip) { border-top-color: var(--bg) !important; border-bottom-color: var(--bg) !important; }
+  :global(.mapboxgl-popup-close-button) { color: var(--ink-2); font-size: 1.25rem; inline-size: 2rem; block-size: 2rem; inset-inline-end: 0; inset-inline-start: auto; }
+  :global(.pin-pop h3) { font-size: var(--step-1); font-weight: 500; padding-inline-end: var(--sp-4); }
+  :global(.pin-pop .cat) { color: var(--ink-3); font-size: var(--step--1); margin-block: 0.25rem var(--sp-1); }
+  :global(.pin-pop dl) { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 0.25rem var(--sp-2); font-size: var(--step--1); }
+  :global(.pin-pop dt) { color: var(--ink-3); }
+  :global(.pin-pop dd) { margin: 0; }
+  :global(.pin-pop a) { display: inline-block; margin-block-start: var(--sp-2); color: var(--red-ink); font-size: var(--step--1); }
+  :global(.map-style-btn) { background: var(--bg) !important; color: var(--ink) !important; font: 500 0.8125rem/1 var(--font-en) !important; padding: 0 0.75rem !important; inline-size: auto !important; min-inline-size: 2.25rem; block-size: 2.25rem !important; }
+  :global(html[lang='ar'] .map-style-btn) { font-family: var(--font-ar) !important; }
+</style>

@@ -49,19 +49,43 @@ Deliberately plain, to avoid the look of template / AI-generated sites:
   the filter reflow, button press feedback, and a 220 ms crossfade when switching light/dark.
   All of it respects `prefers-reduced-motion`.
 
-## Managing projects (CMS)
+## Managing content (CMS)
 
-Projects are edited in the Keystatic admin at **/keystatic** (e.g. https://dar-almadinah-v2.vercel.app/keystatic).
+Everything below is edited in the Keystatic admin at **/keystatic** (e.g. https://dar-almadinah-v2.vercel.app/keystatic).
 Sign in with GitHub; your account needs write access to `37mza/dar-almadinah-v2`. Every Save is a commit to
-`main`, and Vercel republishes the site about a minute later.
+`main`, and Vercel republishes the site about a minute later. Sections with no content are hidden automatically.
 
-- Each project is one file in `src/content/projects/<slug>.yaml`; its renders are in `src/assets/projects/<slug>/`.
-- Upload full-size renders (JPG/PNG/WebP). The build converts them to WebP at 960px and 2000px.
-- **Order** controls position (lower first). **Show on the Home page** + Order decide the four Home projects.
-  The first of those is also the large Home hero image.
-- Empty fields (year, area, status, description) are hidden on the site.
+| CMS section | Where it shows | Notes |
+| --- | --- | --- |
+| **Portfolio > Projects** | Projects page (list + map), Home | One list for both. A cover render puts it in the portfolio; latitude + longitude put it on the map. **Show on the Home page** + Order pick the four Home projects; the first is the Home hero image. |
+| **Office > Team** | About page | Designation, name, specialty, portrait, credentials. Without a portrait, initials are shown. |
+| **Office > Licences & certificates** | Home (licences + ISO) and About (all) | Only entries with **Show on the website** ticked appear. ISO 9001/14001/45001, LEED, Mostadam and compliance certificates are prepared but off. Tick them once issued. |
+| **Office > Partners & clients** | Home and About | Logo (JPG/PNG/WebP/SVG) or just the name. |
+| **Site settings > Office in numbers** | Home and About | Typed by hand. A figure with an empty value is hidden. |
+| **Site settings > Company details** | Footer of every page | Commercial registration, VAT and SCE numbers. |
+
+- Images: upload originals (JPG/PNG/WebP, up to 15 MB). The build converts them to WebP at the right sizes.
+- Certificate files (optional): PDF or image, up to 15 MB. If added, visitors can open them.
+- Empty fields (year, area, status, description…) are hidden on the site.
 
 Locally, `npm run dev` then open http://localhost:4321/keystatic: edits go straight to the files on disk.
+
+### Importing the old map's spreadsheet
+
+```bash
+node scripts/import-map.mjs path/to/projects.csv   # CSV UTF-8 from Excel, or Supabase > Table editor > Export
+```
+
+It fills in coordinates, typology, status, year, plot, BUA and the extra figure for projects that already exist
+(matched by name), and creates map-only projects for the rest. Nothing is deleted; re-running is safe. It prints which
+rows need an Arabic name or have suspicious coordinates. Review in /keystatic, then commit and push.
+
+### Map
+
+Mapbox GL, loaded only when a visitor opens the map. Light mode uses your custom Mapbox style, dark mode Mapbox Dark,
+plus a Satellite switch. Settings are in `src/config/site.ts`. The Mapbox token is public by design; restrict it to
+your domains in the Mapbox dashboard (Tokens > URL restrictions). The worker and Arabic text plugin are served
+from this site (`scripts/vendor.mjs`), so the security policy stays strict.
 
 ### One-time GitHub sign-in setup
 

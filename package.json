@@ -2,8 +2,8 @@
   "name": "dar-almadinah-site",
   "version": "1.0.0",
   "scripts": {
-    "dev": "astro dev",
-    "build": "astro build && node scripts/security-headers.mjs",
+    "dev": "node scripts/vendor.mjs && astro dev",
+    "build": "node scripts/vendor.mjs && astro build && node scripts/security-headers.mjs",
     "preview": "astro preview"
   },
   "dependencies": {
@@ -13,7 +13,9 @@
     "@fontsource/ibm-plex-sans-arabic": "^5.3.0",
     "@keystatic/astro": "^6.0.0",
     "@keystatic/core": "^0.6.9",
+    "@mapbox/mapbox-gl-rtl-text": "^0.4.0",
     "astro": "^7.3.7",
+    "mapbox-gl": "^3.32.0",
     "react": "^19.3.0",
     "react-dom": "^19.3.0"
   },

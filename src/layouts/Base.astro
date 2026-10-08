@@ -15,7 +15,7 @@ interface Props {
   lang: Lang;
   title: string;
   description: string;
-  page: '' | 'projects';
+  page: '' | 'projects' | 'about';
 }
 const { lang, title, description, page } = Astro.props;
 const s = t(lang);

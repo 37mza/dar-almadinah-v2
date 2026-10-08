@@ -10,6 +10,9 @@ const data = Object.fromEntries(
     category: s.filters[p.category],
     year: p.year,
     area: p.areaSqm ? `${p.areaSqm.toLocaleString('en-US')} ${s.sqm}` : undefined,
+    plot: p.plotSqm ? `${p.plotSqm.toLocaleString('en-US')} ${s.sqm}` : undefined,
+    metric: p.metric ? `${p.metric.value.toLocaleString('en-US')}` : undefined,
+    metricLabel: p.metric?.label[lang],
     placeholder: !!p.placeholder,
     ...p[lang],
   }]),
@@ -36,7 +39,9 @@ const data = Object.fromEntries(
         <dl class="po-facts" data-po-facts>
           <div data-fact="location"><dt>{s.location}</dt><dd></dd></div>
           <div data-fact="year"><dt>{s.year}</dt><dd></dd></div>
-          <div data-fact="area"><dt>{s.area}</dt><dd></dd></div>
+          <div data-fact="area"><dt>{t(lang).map.bua}</dt><dd></dd></div>
+          <div data-fact="plot"><dt>{t(lang).map.plot}</dt><dd></dd></div>
+          <div data-fact="metric"><dt data-metric-label></dt><dd></dd></div>
           <div data-fact="status"><dt>{s.status}</dt><dd></dd></div>
         </dl>
       </div>

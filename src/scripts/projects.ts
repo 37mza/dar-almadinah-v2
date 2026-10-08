@@ -5,7 +5,7 @@ import { lockScroll, unlockScroll } from './scroll-lock';
 
 interface ProjectData {
   images: string[]; name: string; summary?: string; category: string;
-  location?: string; status?: string; year?: string; area?: string; placeholder: boolean;
+  location?: string; status?: string; year?: string; area?: string; plot?: string; metric?: string; metricLabel?: string; placeholder: boolean;
 }
 
 const dialog = document.querySelector<HTMLDialogElement>('[data-project-overlay]');
@@ -47,7 +47,8 @@ if (dialog) {
     const sum = dialog!.querySelector<HTMLElement>('[data-po-summary]')!;
     sum.textContent = p.summary ?? '';
     sum.hidden = !p.summary;
-    (['location', 'year', 'area', 'status'] as const).forEach((k) => {
+    dialog!.querySelector('[data-metric-label]')!.textContent = p.metricLabel ?? '';
+    (['location', 'year', 'area', 'plot', 'metric', 'status'] as const).forEach((k) => {
       const row = dialog!.querySelector<HTMLElement>(`[data-fact="${k}"]`)!;
       const v = p[k];
       row.hidden = !v;

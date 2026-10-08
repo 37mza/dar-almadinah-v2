@@ -1,0 +1,33 @@
+---
+// "Office in numbers". Figures are typed in the CMS (Site settings > Office in numbers).
+// Only figures with a value are shown; the section disappears when none are filled in.
+import { t, type Lang } from '../i18n/strings';
+import { figures } from '../data/projects';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const s = t(lang);
+---
+{figures.length > 0 && (
+  <section class="section figures" aria-labelledby="figures-title">
+    <div class="wrap">
+      <h2 id="figures-title" class="sr-only">{s.numbers.title}</h2>
+      <dl class="fig-list">
+        {figures.map((f) => (
+          <div class="fig">
+            <dt class="fig-label">{f.label[lang]}</dt>
+            <dd class="fig-value"><bdi>{f.value}</bdi></dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </section>
+)}
+
+<style>
+  .fig-list { margin: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--sp-5) var(--sp-4); }
+  @media (max-width: 760px) { .fig-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  /* Number above its label, read in that order visually; label first in the DOM for screen readers */
+  .fig { display: flex; flex-direction: column-reverse; gap: var(--sp-1); }
+  .fig-value { margin: 0; font-size: var(--step-3); font-weight: 500; line-height: 1; font-family: var(--font-en); color: var(--ink); }
+  .fig-label { color: var(--ink-2); font-size: var(--step-0); }
+</style>

@@ -4,6 +4,9 @@ import { projects } from '../data/projects';
 import ProjectCard from './ProjectCard.astro';
 import ProjectOverlay from './ProjectOverlay.astro';
 import InquiryForm from './InquiryForm.astro';
+import Figures from './Figures.astro';
+import Credentials from './Credentials.astro';
+import Partners from './Partners.astro';
 
 interface Props { lang: Lang }
 const { lang } = Astro.props;
@@ -27,13 +30,7 @@ const heroImg = (featured[0] ?? projects[0])?.images[0];
   </div>
 </section>
 
-<!-- ABOUT -->
-<section class="section about" id="practice" aria-labelledby="about-title">
-  <div class="wrap two-col">
-    <h2 id="about-title">{s.about.title}</h2>
-    <p class="about-body">{s.about.body}</p>
-  </div>
-</section>
+<Figures lang={lang} />
 
 <!-- SELECTED PROJECTS -->
 <section class="section featured" aria-labelledby="featured-title">
@@ -52,20 +49,9 @@ const heroImg = (featured[0] ?? projects[0])?.images[0];
   </div>
 </section>
 
-<!-- SERVICES -->
-<section class="section services" aria-labelledby="services-title">
-  <div class="wrap two-col">
-    <h2 id="services-title">{s.services.title}</h2>
-    <dl class="svc-list">
-      {s.services.items.map((it) => (
-        <div class="svc">
-          <dt>{it.t}</dt>
-          <dd>{it.d}</dd>
-        </div>
-      ))}
-    </dl>
-  </div>
-</section>
+<Credentials lang={lang} compact />
+
+<Partners lang={lang} />
 
 <!-- INQUIRY -->
 <section class="section inquiry" id="inquire" aria-labelledby="inq-title">
@@ -110,14 +96,6 @@ const heroImg = (featured[0] ?? projects[0])?.images[0];
   .hero-lede { max-inline-size: 52ch; color: var(--ink-2); font-size: var(--step-1); line-height: 1.6; }
   .hero-ctas { display: flex; flex-wrap: wrap; gap: var(--sp-2); margin-block-start: var(--sp-1); }
 
-  /* ================= SECTIONS (shared rhythm) ================= */
-  .section { padding-block: var(--section); border-block-start: 1px solid var(--line); }
-  .section h2 { font-size: var(--step-2); }
-  /* Heading on one side, content on the other; stacks on narrow screens */
-  .two-col { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: var(--sp-4) var(--sp-5); align-items: start; }
-  @media (max-width: 860px) { .two-col { grid-template-columns: 1fr; } }
-
-  .about-body { font-size: var(--step-1); line-height: 1.7; color: var(--ink-2); max-inline-size: 62ch; }
 
   /* ================= SELECTED PROJECTS ================= */
   .sec-head { display: flex; justify-content: space-between; align-items: baseline; gap: var(--sp-2); margin-block-end: var(--sp-5); }
@@ -127,12 +105,6 @@ const heroImg = (featured[0] ?? projects[0])?.images[0];
   .slot.wide { grid-column: 1 / -1; }
   @media (max-width: 960px) { .feat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
   @media (max-width: 640px) { .feat-grid { grid-template-columns: 1fr; } }
-
-  /* ================= SERVICES ================= */
-  .svc-list { margin: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--sp-4) var(--sp-5); }
-  @media (max-width: 640px) { .svc-list { grid-template-columns: 1fr; } }
-  .svc dt { font-weight: 500; font-size: var(--step-1); }
-  .svc dd { margin: var(--sp-1) 0 0; color: var(--ink-2); max-inline-size: 40ch; }
 
   /* ================= INQUIRY ================= */
   .inquiry { background: var(--bg-raised); }

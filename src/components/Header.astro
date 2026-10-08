@@ -1,7 +1,7 @@
 ---
 import { t, type Lang } from '../i18n/strings';
 import Wordmark from './Wordmark.astro';
-interface Props { lang: Lang; page: '' | 'projects' }
+interface Props { lang: Lang; page: '' | 'projects' | 'about' }
 const { lang, page } = Astro.props;
 const s = t(lang);
 const other = s.otherLangCode as Lang;
@@ -13,9 +13,9 @@ const other = s.otherLangCode as Lang;
     </a>
     <nav class="nav" aria-label={lang === 'ar' ? 'التنقل الرئيسي' : 'Main'}>
       <a href={`/${lang}/projects/`} class="nav-link link-line" aria-current={page === 'projects' ? 'page' : undefined}>{s.nav.work}</a>
-      <a href={`/${lang}/#practice`} class="nav-link link-line hide-sm">{s.nav.practice}</a>
-      <a href={`/${other}/${page ? page + '/' : ''}`} class="nav-link lang" lang={other} hreflang={other}>{s.otherLang}</a>
-      <button type="button" class="theme-toggle" data-theme-toggle
+      <a href={`/${lang}/about/`} class="nav-link link-line" aria-current={page === 'about' ? 'page' : undefined}>{s.nav.practice}</a>
+      <a href={`/${other}/${page ? page + '/' : ''}`} class="nav-link lang" lang={other} hreflang={other} aria-label={s.otherLang}><span class="lang-long">{s.otherLang}</span><span class="lang-short" aria-hidden="true">{other === 'en' ? 'EN' : 'ع'}</span></a>
+      <button type="button" class="theme-toggle hide-sm" data-theme-toggle
         data-label-light={lang === 'ar' ? 'التبديل إلى الوضع الفاتح' : 'Switch to light mode'}
         data-label-dark={lang === 'ar' ? 'التبديل إلى الوضع الداكن' : 'Switch to dark mode'}
         aria-label={lang === 'ar' ? 'تبديل المظهر' : 'Toggle color scheme'}>
@@ -40,10 +40,11 @@ const other = s.otherLangCode as Lang;
     box-shadow: 0 1px 0 var(--line);
   }
   .bar { display: flex; align-items: center; justify-content: space-between; block-size: var(--header-h); gap: 1rem; }
-  .brand { display: flex; align-items: center; min-inline-size: 0; }
+  .brand { display: flex; align-items: center; flex: none; }
   .nav { display: flex; align-items: center; gap: var(--sp-3); font-size: var(--step--1); }
   :global(html[lang='ar']) .nav { font-size: var(--step-0); }
-  .nav-link { color: var(--ink-2); transition: color 200ms ease; padding-block: 0.5rem; }
+  .nav-link { color: var(--ink-2); transition: color 200ms ease; padding-block: 0.5rem; white-space: nowrap; }
+  .lang-short { display: none; }
   .nav-link[aria-current='page'] { color: var(--ink); }
   .lang { font-family: var(--font-en); }
   .lang:lang(ar) { font-family: var(--font-ar); }
@@ -65,8 +66,12 @@ const other = s.otherLangCode as Lang;
   .show-xs, .show-xs-sr { display: none; }
   .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
   @media (max-width: 720px) { .hide-sm { display: none; } .nav { gap: var(--sp-2); } }
+  /* Smallest phones: the hero, form section and footer each have a request button */
+  @media (max-width: 400px) { .btn--sm { display: none; } }
   @media (max-width: 420px) {
-    .nav { gap: var(--sp-1); }
+    .nav { gap: var(--sp-2); }
+    .lang-long { display: none; }
+    .lang-short { display: inline; }
     .hide-xs { display: none; }
     .show-xs { display: block; }
     .show-xs-sr { display: inline; }

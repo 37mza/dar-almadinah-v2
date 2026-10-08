@@ -1,0 +1,52 @@
+---
+import { t, type Lang } from '../i18n/strings';
+import Figures from './Figures.astro';
+import Team from './Team.astro';
+import Credentials from './Credentials.astro';
+import Partners from './Partners.astro';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const s = t(lang);
+---
+<section class="page-head">
+  <div class="wrap two-col">
+    <h1 class="page-title">{s.aboutPage.title}</h1>
+    <p class="body">{s.about.body}</p>
+  </div>
+</section>
+
+<Figures lang={lang} />
+
+<section class="section services" aria-labelledby="services-title">
+  <div class="wrap two-col">
+    <h2 id="services-title">{s.aboutPage.servicesTitle}</h2>
+    <dl class="svc-list">
+      {s.services.items.map((it) => (
+        <div class="svc"><dt>{it.t}</dt><dd>{it.d}</dd></div>
+      ))}
+    </dl>
+  </div>
+</section>
+
+<Team lang={lang} />
+<Credentials lang={lang} />
+<Partners lang={lang} />
+
+<section class="section cta" aria-labelledby="cta-title">
+  <div class="wrap cta-row">
+    <h2 id="cta-title">{s.inquiry.title}</h2>
+    <button type="button" class="btn" data-inquire>{s.hero.cta}</button>
+  </div>
+</section>
+
+<style>
+  .page-head { padding-block: calc(var(--header-h) + var(--sp-6)) var(--section); }
+  .page-title { font-size: var(--step-3); }
+  :global(html[lang='ar']) .page-title { font-weight: 600; }
+  .body { font-size: var(--step-1); line-height: 1.75; color: var(--ink-2); max-inline-size: 62ch; }
+  .svc-list { margin: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--sp-4) var(--sp-5); }
+  @media (max-width: 640px) { .svc-list { grid-template-columns: 1fr; } }
+  .svc dt { font-weight: 500; font-size: var(--step-1); }
+  .svc dd { margin: var(--sp-1) 0 0; color: var(--ink-2); max-inline-size: 40ch; }
+  .cta-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--sp-3); }
+</style>

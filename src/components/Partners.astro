@@ -1,0 +1,35 @@
+---
+// Partners and clients, from the CMS (Office > Partners & clients). Hidden when empty.
+import { t, type Lang } from '../i18n/strings';
+import { partners } from '../data/projects';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const s = t(lang);
+---
+{partners.length > 0 && (
+  <section class="section partners" aria-labelledby="partners-title">
+    <div class="wrap">
+      <h2 id="partners-title" class="sec-title">{s.partners.title}</h2>
+      <ul class="grid">
+        {partners.map((p) => {
+          const inner = p.logo
+            ? <img src={p.logo} alt={p.name[lang]} loading="lazy" decoding="async" />
+            : <span class="name">{p.name[lang]}</span>;
+          return <li class="tile">{p.url ? <a href={p.url} target="_blank" rel="noopener" aria-label={p.name[lang]}>{inner}</a> : inner}</li>;
+        })}
+      </ul>
+    </div>
+  </section>
+)}
+
+<style>
+  .sec-title { margin-block-end: var(--sp-5); }
+  .grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: var(--sp-2); }
+  @media (max-width: 960px) { .grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+  @media (max-width: 560px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  /* Logos sit on a light tile in both schemes so dark logos stay visible */
+  .tile { aspect-ratio: 3 / 2; background: var(--logo-tile); border-radius: 2px; display: grid; }
+  .tile > a, .tile > img, .tile > .name { display: grid; place-items: center; padding: var(--sp-3); }
+  .tile img { max-inline-size: 100%; max-block-size: 3rem; object-fit: contain; margin: auto; }
+  .name { color: #3a3835; font-size: var(--step--1); text-align: center; }
+</style>

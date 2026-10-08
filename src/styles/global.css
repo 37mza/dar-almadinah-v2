@@ -28,7 +28,7 @@
 
   /* Layout */
   --gutter: clamp(var(--sp-2), 4vw, var(--sp-5));
-  --section: clamp(var(--sp-6), 8vw, var(--sp-7));
+  --section: clamp(var(--sp-6), 9vw, 7.5rem); /* 64–120px between sections */
   --max: 1440px;
   --header-h: 72px;
 
@@ -60,6 +60,7 @@
   --shadow-drawer: 0 0 80px rgb(0 0 0 / 0.45);
   --backdrop: rgb(0 0 0 / 0.55);
   --hero-scrim: 0.7;
+  --logo-tile: #e9e6e0;
   color-scheme: dark;
 }
 @media (prefers-color-scheme: light) {
@@ -76,6 +77,7 @@
     --shadow-drawer: 0 0 80px rgb(22 21 20 / 0.16);
     --backdrop: rgb(22 21 20 / 0.28);
     --hero-scrim: 0.62;
+    --logo-tile: #ffffff;
     color-scheme: light;
   }
 }
@@ -92,6 +94,7 @@
   --shadow-drawer: 0 0 80px rgb(22 21 20 / 0.16);
   --backdrop: rgb(22 21 20 / 0.28);
   --hero-scrim: 0.62;
+  --logo-tile: #ffffff;
   color-scheme: light;
 }
 
@@ -146,6 +149,14 @@ button, [role='button'], .btn, .chip {
 
 /* Small grey label (used sparingly: project category in the project view) */
 .meta-label { font-size: var(--step--1); color: var(--ink-3); }
+
+/* ---------- Sections (shared rhythm on every page) ---------- */
+.section { padding-block: var(--section); border-block-start: 1px solid var(--line); }
+.section h2 { font-size: var(--step-2); }
+/* Heading on one side, content on the other; stacks on narrow screens */
+.two-col { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: var(--sp-4) var(--sp-5); align-items: start; }
+@media (max-width: 860px) { .two-col { grid-template-columns: 1fr; } }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 
 /* ---------- Buttons ---------- */
 .btn {

@@ -18,6 +18,7 @@ if (group && grid) {
     }
     if (empty) empty.hidden = shown > 0;
     buttons.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.filter === cat)));
+    document.dispatchEvent(new CustomEvent('projects:filter', { detail: cat })); // the map listens
   };
 
   group.addEventListener('click', (e) => {
@@ -32,4 +33,29 @@ if (group && grid) {
     const vt = document.startViewTransition({ update: () => apply(cat), types: ['filter'] });
     vt.finished.finally(() => root.classList.remove('vt-filter'));
   });
+}
+
+// ---------- List / Map switch ----------
+const views = document.querySelector<HTMLElement>('[data-views]');
+const mapWrap = document.querySelector<HTMLElement>('[data-map-wrap]');
+if (views && grid && mapWrap) {
+  const setView = (view: 'list' | 'map', push = true) => {
+    const isMap = view === 'map';
+    mapWrap.hidden = !isMap;
+    grid.hidden = isMap;
+    if (empty && isMap) empty.hidden = true;
+    views.querySelectorAll<HTMLButtonElement>('[data-view]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.view === view)));
+    if (push) {
+      const url = new URL(location.href);
+      if (isMap) url.searchParams.set('view', 'map'); else url.searchParams.delete('view');
+      history.replaceState(null, '', url);
+    }
+    document.dispatchEvent(new CustomEvent('projects:view', { detail: view }));
+  };
+  views.addEventListener('click', (e) => {
+    const b = (e.target as Element).closest<HTMLButtonElement>('[data-view]');
+    if (b) setView(b.dataset.view as 'list' | 'map');
+  });
+  // Deferred one frame so every page script (including the map) is listening first
+  if (new URLSearchParams(location.search).get('view') === 'map') requestAnimationFrame(() => setView('map', false));
 }

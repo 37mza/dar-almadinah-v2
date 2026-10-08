@@ -13,7 +13,7 @@
   {
     "src": "^/(?!keystatic|api/keystatic)(.*)$",
     "headers": {
-      "Content-Security-Policy": "default-src 'self'; script-src 'self'; style-src 'self'; style-src-attr 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' https://api.web3forms.com; form-action 'self' https://api.web3forms.com; frame-ancestors 'none'; base-uri 'self'; object-src 'none'; upgrade-insecure-requests"
+      "Content-Security-Policy": "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self'; style-src-attr 'unsafe-inline'; img-src 'self' data: blob: https://api.mapbox.com; font-src 'self'; worker-src 'self'; child-src 'self'; connect-src 'self' https://api.web3forms.com https://api.mapbox.com https://events.mapbox.com; form-action 'self' https://api.web3forms.com; frame-ancestors 'none'; base-uri 'self'; object-src 'none'; upgrade-insecure-requests"
     }
   },
   {
