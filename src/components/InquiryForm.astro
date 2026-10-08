@@ -17,7 +17,7 @@ const key = import.meta.env.PUBLIC_WEB3FORMS_KEY as string | undefined;
   novalidate
 >
   {key && <input type="hidden" name="access_key" value={key} />}
-  <input type="hidden" name="subject" value={lang === 'ar' ? 'طلب عرض جديد — موقع دار المدينة' : 'New proposal request — Dar Al Madinah website'} />
+  <input type="hidden" name="subject" value={lang === 'ar' ? 'طلب عرض جديد من موقع دار المدينة' : 'New proposal request from the Dar Al Madinah website'} />
   <input type="hidden" name="from_name" value="daralmadinah.com.sa" />
   <input type="checkbox" name="botcheck" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true" />
 
@@ -60,7 +60,6 @@ const key = import.meta.env.PUBLIC_WEB3FORMS_KEY as string | undefined;
   <div class="actions">
     <button type="submit" class="btn submit" data-submit>
       <span class="label" data-label>{s.submit}</span>
-      <svg class="arrow" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13m-5-6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </button>
     <p class="status" role="status" aria-live="polite" data-status></p>
   </div>
@@ -77,11 +76,11 @@ const key = import.meta.env.PUBLIC_WEB3FORMS_KEY as string | undefined;
 </form>
 
 <style>
-  .inq { display: grid; gap: 1.75rem; }
-  .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.25rem 1.5rem; }
+  .inq { display: grid; gap: var(--sp-4); }
+  .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--sp-3); }
   .compact .grid { grid-template-columns: 1fr; }
   @media (max-width: 640px) { .grid { grid-template-columns: 1fr; } }
-  .field { display: grid; gap: 0.5rem; }
+  .field { display: grid; gap: var(--sp-1); }
   .lbl { font-size: var(--step--1); color: var(--ink-3); }
   :global(html[lang='ar']) .lbl { font-size: 0.95rem; }
   .lbl em { font-style: normal; opacity: 0.7; }
@@ -102,13 +101,13 @@ const key = import.meta.env.PUBLIC_WEB3FORMS_KEY as string | undefined;
   :global(html[dir='rtl']) input[dir='ltr'] { text-align: end; }
   .field.is-invalid input, .field.is-invalid textarea { border-color: var(--red-ink); }
 
-  .types { border: 0; padding: 0; margin: 0; display: grid; gap: 0.75rem; }
-  .chips { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .types { border: 0; padding: 0; margin: 0; display: grid; gap: var(--sp-2); }
+  .chips { display: flex; flex-wrap: wrap; gap: var(--sp-1); }
   .chip { position: relative; cursor: pointer; }
   .chip input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
   .chip span {
     display: inline-flex; align-items: center; min-block-size: 2.5rem; padding-inline: 1rem;
-    border-radius: 999px; box-shadow: inset 0 0 0 1px var(--line-strong);
+    border-radius: 2px; box-shadow: inset 0 0 0 1px var(--line-strong);
     color: var(--ink-2); font-size: var(--step--1);
     transition: background-color 200ms ease, color 200ms ease, box-shadow 200ms ease, transform var(--dur-press) var(--ease-out);
   }
@@ -120,7 +119,7 @@ const key = import.meta.env.PUBLIC_WEB3FORMS_KEY as string | undefined;
     .chip:hover input:not(:checked) + span { box-shadow: inset 0 0 0 1px var(--ink-2); color: var(--ink); }
   }
 
-  .actions { display: flex; align-items: center; flex-wrap: wrap; gap: 1rem 1.5rem; }
+  .actions { display: flex; align-items: center; flex-wrap: wrap; gap: var(--sp-2) var(--sp-3); }
   .submit { min-inline-size: 12rem; }
   .submit .label { transition: filter 200ms ease, opacity 200ms ease; }
   .submit.is-swapping .label { filter: blur(3px); opacity: 0; }
@@ -130,10 +129,10 @@ const key = import.meta.env.PUBLIC_WEB3FORMS_KEY as string | undefined;
   .status.ok { color: var(--ink); }
   .status.err { color: var(--red-ink); }
 
-  .direct { display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem 1.25rem; padding-block-start: 1.5rem; border-block-start: 1px solid var(--line); font-size: var(--step--1); }
+  .direct { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-1) var(--sp-3); padding-block-start: var(--sp-3); border-block-start: 1px solid var(--line); font-size: var(--step--1); }
   :global(html[lang='ar']) .direct { font-size: 0.95rem; }
   .direct .lbl { inline-size: 100%; }
-  .wa { display: inline-flex; align-items: center; gap: 0.45rem; color: var(--ink); padding: 0.45rem 0.85rem; border-radius: 999px; box-shadow: inset 0 0 0 1px var(--line-strong); transition: background-color 200ms ease, transform var(--dur-press) var(--ease-out); }
+  .wa { display: inline-flex; align-items: center; gap: 0.45rem; color: var(--ink); padding: 0.45rem 0.85rem; border-radius: 2px; box-shadow: inset 0 0 0 1px var(--line-strong); transition: background-color 200ms ease, transform var(--dur-press) var(--ease-out); }
   .wa:active { transform: scale(0.97); }
   @media (hover: hover) and (pointer: fine) { .wa:hover { background: rgb(var(--ink-rgb) / 0.06); } }
   .hp { position: absolute; inset-inline-start: -9999px; }

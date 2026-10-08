@@ -1,7 +1,6 @@
 // Light / dark toggle.
 // Default follows the device setting; a click stores an explicit choice in localStorage.
-// The switch is revealed as a circle growing from the toggle (View Transitions), a rare,
-// deliberate action, so it can afford a little delight. Reduced motion: instant switch.
+// The switch crossfades in 220 ms (View Transitions). Reduced motion: instant switch.
 const root = document.documentElement;
 const toggle = document.querySelector<HTMLButtonElement>('[data-theme-toggle]');
 const systemLight = matchMedia('(prefers-color-scheme: light)');
@@ -31,22 +30,12 @@ function apply(scheme: Scheme) {
   syncUi();
 }
 
-toggle?.addEventListener('click', async () => {
+toggle?.addEventListener('click', () => {
   const next: Scheme = current() === 'light' ? 'dark' : 'light';
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (!document.startViewTransition || !supportsTypes || reduce) { apply(next); return; }
 
-  const r = toggle.getBoundingClientRect();
-  const x = r.left + r.width / 2;
-  const y = r.top + r.height / 2;
-  const radius = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
-
-  const vt = document.startViewTransition({ update: () => apply(next), types: ['theme'] });
-  await vt.ready;
-  root.animate(
-    { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${radius}px at ${x}px ${y}px)`] },
-    { duration: 620, easing: 'cubic-bezier(0.77, 0, 0.175, 1)', pseudoElement: '::view-transition-new(root)' },
-  );
+  document.startViewTransition({ update: () => apply(next), types: ['theme'] });
 });
 
 // Follow the device if the visitor never chose explicitly

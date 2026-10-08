@@ -31,11 +31,11 @@ const year = new Date().getFullYear();
 </footer>
 
 <style>
-  .site-footer { border-block-start: 1px solid var(--line); padding-block: clamp(3rem, 2rem + 4vw, 5.5rem) calc(2rem + env(safe-area-inset-bottom, 0px)); background: var(--bg-sunken); }
-  .top { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 2.5rem; }
-  .cols { display: flex; gap: clamp(2.5rem, 2rem + 4vw, 6rem); flex-wrap: wrap; }
-  .col { display: grid; gap: 0.6rem; align-content: start; justify-items: start; color: var(--ink-2); }
+  .site-footer { border-block-start: 1px solid var(--line); padding-block: var(--sp-6) calc(var(--sp-4) + env(safe-area-inset-bottom, 0px)); background: var(--bg-sunken); }
+  .top { display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--sp-5); }
+  .cols { display: flex; gap: var(--sp-6); flex-wrap: wrap; }
+  .col { display: grid; gap: var(--sp-1); align-content: start; justify-items: start; color: var(--ink-2); }
   .as-link { text-align: start; color: inherit; }
-  .bottom { margin-block-start: clamp(3rem, 2rem + 4vw, 5rem); display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.5rem 2rem; color: var(--ink-3); font-size: var(--step--1); }
+  .bottom { margin-block-start: var(--sp-6); display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--sp-1) var(--sp-4); color: var(--ink-3); font-size: var(--step--1); }
   :global(html[lang='ar']) .bottom { font-size: 0.9rem; }
 </style>

@@ -11,97 +11,70 @@ const s = t(lang);
 const featured = projects.filter((p) => p.featured).slice(0, 4);
 // Hero image: the first featured project's cover (change it by reordering projects in the CMS)
 const heroImg = (featured[0] ?? projects[0])?.images[0];
-const sizes = ['lg', 'sm', 'md', 'md'] as const;
-const words = s.statement.body.split(' ');
-const band = lang === 'ar' ? 'ضيافة · سكني · تجاري · متعدد الاستخدامات · ' : 'Hospitality · Residential · Commercial · Mixed-use · ';
 ---
-<!-- HERO -->
+<!-- HERO: one render, one heading, one sentence, two actions. No entrance or scroll effects. -->
 <section class="hero" aria-labelledby="hero-title">
   <div class="hero-media" aria-hidden="true">
     {heroImg && <img src={heroImg} alt="" fetchpriority="high" width="2000" height="1375" />}
   </div>
-  <div class="hero-shade" aria-hidden="true"></div>
-  <span class="hero-rule" aria-hidden="true"></span>
   <div class="wrap hero-content">
-    <p class="kicker hero-eyebrow">{s.hero.eyebrow}</p>
-    <h1 class="hero-title" id="hero-title">
-      {s.hero.title.map((line, i) => (
-        <span class="line"><span style={`--l:${i}`}>{line}</span></span>
-      ))}
-    </h1>
-    <div class="hero-foot">
-      <p class="hero-lede">{s.hero.lede}</p>
-      <div class="hero-ctas">
-        <button type="button" class="btn" data-inquire>
-          {s.hero.cta}
-          <svg class="arrow" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13m-5-6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
-        <a href={`/${lang}/projects/`} class="btn btn--ghost">{s.hero.secondary}</a>
-      </div>
+    <h1 class="hero-title" id="hero-title">{s.hero.title}</h1>
+    <p class="hero-lede">{s.hero.lede}</p>
+    <div class="hero-ctas">
+      <button type="button" class="btn" data-inquire>{s.hero.cta}</button>
+      <a href={`/${lang}/projects/`} class="btn btn--ghost">{s.hero.secondary}</a>
     </div>
   </div>
-  <a href="#practice" class="scroll-cue" aria-label={s.hero.scroll}><span></span></a>
 </section>
 
-<!-- STATEMENT -->
-<section class="statement" id="practice">
-  <div class="wrap">
-    <p class="kicker" data-reveal>{s.statement.kicker}</p>
-    <p class="statement-text">
-      {words.map((w) => <span class="w">{w} </span>)}
-    </p>
+<!-- ABOUT -->
+<section class="section about" id="practice" aria-labelledby="about-title">
+  <div class="wrap two-col">
+    <h2 id="about-title">{s.about.title}</h2>
+    <p class="about-body">{s.about.body}</p>
   </div>
 </section>
 
-<!-- FEATURED WORK -->
-<section class="featured" aria-labelledby="featured-title">
+<!-- SELECTED PROJECTS -->
+<section class="section featured" aria-labelledby="featured-title">
   <div class="wrap">
     <div class="sec-head">
-      <h2 class="kicker" id="featured-title" data-reveal>{s.featured.kicker}</h2>
-      <a href={`/${lang}/projects/`} class="link-line all" data-reveal>{s.featured.all}</a>
+      <h2 id="featured-title">{s.featured.title}</h2>
+      <a href={`/${lang}/projects/`} class="link-line all">{s.featured.all}</a>
     </div>
     <div class="feat-grid">
       {featured.map((p, i) => (
-        <div class={`slot slot-${i + 1}`}>
-          <ProjectCard lang={lang} project={p} i={i} size={sizes[i]} eager={i === 0} />
+        <div class:list={['slot', { wide: i === 0 }]}>
+          <ProjectCard lang={lang} project={p} i={i} size={i === 0 ? 'lg' : 'md'} eager={i === 0} />
         </div>
       ))}
     </div>
   </div>
 </section>
 
-<!-- MOVING BAND -->
-<div class="band" aria-hidden="true">
-  <div class="band-track"><span>{band.repeat(4)}</span></div>
-</div>
-
 <!-- SERVICES -->
-<section class="services" aria-labelledby="services-title">
-  <div class="wrap">
-    <h2 class="kicker" id="services-title" data-reveal>{s.services.kicker}</h2>
-    <ol class="svc-list">
-      {s.services.items.map((it, i) => (
-        <li class="svc" data-reveal style={`--i:${i}`}>
-          <span class="svc-n">{String(i + 1).padStart(2, '0')}</span>
-          <h3 class="svc-t">{it.t}</h3>
-          <p class="svc-d">{it.d}</p>
-        </li>
+<section class="section services" aria-labelledby="services-title">
+  <div class="wrap two-col">
+    <h2 id="services-title">{s.services.title}</h2>
+    <dl class="svc-list">
+      {s.services.items.map((it) => (
+        <div class="svc">
+          <dt>{it.t}</dt>
+          <dd>{it.d}</dd>
+        </div>
       ))}
-    </ol>
+    </dl>
   </div>
 </section>
 
 <!-- INQUIRY -->
-<section class="inquiry" id="inquire" aria-labelledby="inq-title">
-  <div class="wrap inq-grid">
+<section class="section inquiry" id="inquire" aria-labelledby="inq-title">
+  <div class="wrap two-col">
     <div class="inq-intro">
-      <p class="kicker" data-reveal>{s.inquiry.kicker}</p>
-      <h2 id="inq-title" data-reveal style="--i:1">{s.inquiry.title}</h2>
-      <p class="inq-lede" data-reveal style="--i:2">{s.inquiry.lede}</p>
+      <h2 id="inq-title">{s.inquiry.title}</h2>
+      <p class="inq-lede">{s.inquiry.lede}</p>
     </div>
-    <div data-reveal style="--i:2">
-      <InquiryForm lang={lang} id="section" />
-    </div>
+    <InquiryForm lang={lang} id="section" />
   </div>
 </section>
 
@@ -115,149 +88,54 @@ const band = lang === 'ar' ? 'ضيافة · سكني · تجاري · متعدد
   /* ================= HERO ================= */
   .hero {
     position: relative;
-    min-block-size: 100svh;
+    margin-block-start: var(--header-h);
+    min-block-size: min(calc(100svh - var(--header-h)), 820px);
     display: grid; align-items: end;
     overflow: clip;
     isolation: isolate;
   }
-  .hero-media { position: absolute; inset: 0; z-index: -2; animation: hero-media-in 1800ms var(--ease-out) both; }
+  .hero-media { position: absolute; inset: 0; z-index: -2; }
   .hero-media img { inline-size: 100%; block-size: 100%; object-fit: cover; }
-  .hero-shade {
-    position: absolute; inset: 0; z-index: -1;
-    --s: var(--hero-scrim);
-    background:
-      linear-gradient(to top, var(--bg) 2%, rgb(var(--bg-rgb) / calc(var(--s) * 0.8)) 38%, rgb(var(--bg-rgb) / calc(var(--s) * 0.2)) 70%, rgb(var(--bg-rgb) / var(--s)) 100%),
-      linear-gradient(to right, rgb(var(--bg-rgb) / var(--s)), rgb(var(--bg-rgb) / 0) 60%);
-  }
-  :global(html[dir='rtl']) .hero-shade {
-    background:
-      linear-gradient(to top, var(--bg) 2%, rgb(var(--bg-rgb) / calc(var(--s) * 0.8)) 38%, rgb(var(--bg-rgb) / calc(var(--s) * 0.2)) 70%, rgb(var(--bg-rgb) / var(--s)) 100%),
-      linear-gradient(to left, rgb(var(--bg-rgb) / var(--s)), rgb(var(--bg-rgb) / 0) 60%);
-  }
-  .hero-rule {
-    position: absolute; inset-block: calc(var(--header-h) + 1.5rem) 0; inset-inline-start: var(--gutter);
-    inline-size: 1px; background: var(--red);
-    transform-origin: top; animation: rule-in 1400ms var(--ease-in-out) 200ms both;
-    opacity: 0.8;
+  /* A plain scrim so the text stays readable on any render; it fades toward the page color. */
+  .hero::before {
+    content: ''; position: absolute; inset: 0; z-index: -1;
+    background: linear-gradient(to top, var(--bg) 0%, rgb(var(--bg-rgb) / var(--hero-scrim)) 35%, rgb(var(--bg-rgb) / 0) 75%);
   }
   .hero-content {
-    padding-block: calc(var(--header-h) + 3rem) clamp(3rem, 2rem + 4vw, 6rem);
-    padding-inline-start: calc(var(--gutter) * 2);
+    padding-block: var(--sp-7) var(--sp-6);
+    display: grid; gap: var(--sp-3); justify-items: start;
   }
-  .hero-eyebrow { animation: fade-up 900ms var(--ease-out) 500ms both; color: var(--ink-2); }
-  .hero-title {
-    margin-block: 1.5rem 2.5rem;
-    font-size: var(--step-hero);
-    font-weight: 500;
-    line-height: 0.92;
-    letter-spacing: -0.045em;
-  }
-  :global(html[lang='ar']) .hero-title { line-height: 1.15; letter-spacing: 0; font-weight: 600; }
-  .line { display: block; overflow: clip; padding-block-end: 0.06em; }
-  .line > span { display: inline-block; animation: line-in 1100ms var(--ease-out) both; animation-delay: calc(250ms + var(--l) * 110ms); }
-  .line:last-child > span { color: var(--red-ink); }
-  .hero-foot { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 2rem; }
-  .hero-lede { max-inline-size: 34ch; color: var(--ink-2); font-size: var(--step-1); line-height: 1.5; animation: fade-up 900ms var(--ease-out) 750ms both; }
-  .hero-ctas { display: flex; flex-wrap: wrap; gap: 0.75rem; animation: fade-up 900ms var(--ease-out) 850ms both; }
-  .scroll-cue {
-    position: absolute; inset-block-end: 1.25rem; inset-inline-end: var(--gutter);
-    inline-size: 1px; block-size: 3.5rem; background: var(--line-strong); overflow: hidden;
-  }
-  .scroll-cue span { display: block; inline-size: 100%; block-size: 40%; background: var(--ink); animation: cue 2200ms var(--ease-in-out) 1400ms infinite; }
+  .hero-title { font-size: var(--step-4); font-weight: 500; max-inline-size: 20ch; }
+  :global(html[lang='ar']) .hero-title { font-weight: 600; max-inline-size: 18ch; }
+  .hero-lede { max-inline-size: 52ch; color: var(--ink-2); font-size: var(--step-1); line-height: 1.6; }
+  .hero-ctas { display: flex; flex-wrap: wrap; gap: var(--sp-2); margin-block-start: var(--sp-1); }
 
-  @keyframes hero-media-in { from { transform: scale(1.12); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-  @keyframes rule-in { from { transform: scaleY(0); } to { transform: scaleY(1); } }
-  @keyframes line-in { from { transform: translateY(105%); } to { transform: translateY(0); } }
-  @keyframes fade-up { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
-  @keyframes cue { 0% { transform: translateY(-100%); } 60%, 100% { transform: translateY(260%); } }
+  /* ================= SECTIONS (shared rhythm) ================= */
+  .section { padding-block: var(--section); border-block-start: 1px solid var(--line); }
+  .section h2 { font-size: var(--step-2); }
+  /* Heading on one side, content on the other; stacks on narrow screens */
+  .two-col { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: var(--sp-4) var(--sp-5); align-items: start; }
+  @media (max-width: 860px) { .two-col { grid-template-columns: 1fr; } }
 
-  /* Scroll-driven parallax: image drifts and swells, copy lifts away (supported browsers only) */
-  @supports (animation-timeline: scroll()) {
-    .hero-media img { animation: hero-drift linear both; animation-timeline: scroll(root); animation-range: 0 100svh; }
-    .hero-content { animation: hero-lift linear both; animation-timeline: scroll(root); animation-range: 0 80svh; }
-    @keyframes hero-drift { to { transform: translateY(18%) scale(1.08); } }
-    @keyframes hero-lift { to { transform: translateY(-12%); opacity: 0; } }
-  }
+  .about-body { font-size: var(--step-1); line-height: 1.7; color: var(--ink-2); max-inline-size: 62ch; }
 
-  /* ================= STATEMENT ================= */
-  .statement { padding-block: var(--section); }
-  .statement-text {
-    margin-block-start: 2rem;
-    font-size: var(--step-3);
-    line-height: 1.2;
-    letter-spacing: -0.02em;
-    font-weight: 400;
-    max-inline-size: 26ch;
-  }
-  :global(html[lang='ar']) .statement-text { line-height: 1.6; letter-spacing: 0; max-inline-size: 30ch; }
-  @supports (animation-timeline: view()) {
-    .w { animation: word-lit linear both; animation-timeline: view(); animation-range: cover 5% cover 35%; }
-    @keyframes word-lit { from { opacity: 0.16; } to { opacity: 1; } }
-  }
-
-  /* ================= FEATURED ================= */
-  .featured { padding-block-end: var(--section); }
-  .sec-head { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; margin-block-end: clamp(2rem, 4vw, 3.5rem); }
-  .all { color: var(--ink-2); }
-  .feat-grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: clamp(3rem, 5vw, 6rem) clamp(1rem, 2.5vw, 2.5rem); }
-  .slot-1 { grid-column: 1 / span 8; }
-  .slot-2 { grid-column: 9 / span 4; margin-block-start: 30%; }
-  .slot-3 { grid-column: 2 / span 5; }
-  .slot-4 { grid-column: 7 / span 6; margin-block-start: 18%; }
-  @media (max-width: 760px) {
-    .feat-grid { grid-template-columns: 1fr; }
-    .slot-1, .slot-2, .slot-3, .slot-4 { grid-column: auto; margin-block-start: 0; }
-  }
-
-  /* ================= BAND ================= */
-  .band { border-block: 1px solid var(--line); padding-block: clamp(1rem, 2vw, 1.75rem); overflow: clip; }
-  .band-track { white-space: nowrap; font-size: clamp(2.5rem, 1.5rem + 5vw, 6.5rem); font-weight: 500; letter-spacing: -0.03em; color: transparent; -webkit-text-stroke: 1px var(--ink-3); line-height: 1.2; }
-  :global(html[lang='ar']) .band-track { letter-spacing: 0; -webkit-text-stroke: 0; color: var(--ink-3); opacity: 0.45; }
-  @supports (animation-timeline: view()) {
-    .band-track { animation: band-move linear both; animation-timeline: view(); animation-range: cover; }
-    @keyframes band-move { from { transform: translateX(0); } to { transform: translateX(-30%); } }
-    :global(html[dir='rtl']) .band-track { animation-name: band-move-rtl; }
-    @keyframes band-move-rtl { from { transform: translateX(0); } to { transform: translateX(30%); } }
-  }
+  /* ================= SELECTED PROJECTS ================= */
+  .sec-head { display: flex; justify-content: space-between; align-items: baseline; gap: var(--sp-2); margin-block-end: var(--sp-5); }
+  .all { color: var(--ink-2); font-size: var(--step--1); }
+  :global(html[lang='ar']) .all { font-size: var(--step-0); }
+  .feat-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--sp-5) var(--sp-3); }
+  .slot.wide { grid-column: 1 / -1; }
+  @media (max-width: 960px) { .feat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 640px) { .feat-grid { grid-template-columns: 1fr; } }
 
   /* ================= SERVICES ================= */
-  .services { padding-block: var(--section); }
-  .svc-list { list-style: none; margin: 2.5rem 0 0; padding: 0; border-block-start: 1px solid var(--line); }
-  .svc {
-    display: grid; grid-template-columns: 4rem minmax(0, 5fr) minmax(0, 6fr); gap: 1rem 2rem;
-    align-items: baseline; padding-block: clamp(1.5rem, 3vw, 2.5rem);
-    border-block-end: 1px solid var(--line);
-  }
-  .svc-n { color: var(--ink-3); font-family: var(--font-en); font-size: var(--step--1); transition: color 300ms ease; }
-  .svc-t { font-size: var(--step-2); font-weight: 400; transition: transform 500ms var(--ease-out); }
-  .svc-d { color: var(--ink-2); max-inline-size: 46ch; }
-  @media (hover: hover) and (pointer: fine) {
-    .svc:hover .svc-n { color: var(--red-ink); }
-    .svc:hover .svc-t { transform: translateX(10px); }
-    :global(html[dir='rtl']) .svc:hover .svc-t { transform: translateX(-10px); }
-  }
-  @media (max-width: 760px) {
-    .svc { grid-template-columns: 2.5rem minmax(0, 1fr); }
-    .svc-d { grid-column: 2; }
-  }
+  .svc-list { margin: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--sp-4) var(--sp-5); }
+  @media (max-width: 640px) { .svc-list { grid-template-columns: 1fr; } }
+  .svc dt { font-weight: 500; font-size: var(--step-1); }
+  .svc dd { margin: var(--sp-1) 0 0; color: var(--ink-2); max-inline-size: 40ch; }
 
   /* ================= INQUIRY ================= */
-  .inquiry { padding-block: var(--section); background: var(--bg-raised); }
-  .inq-grid { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 3rem clamp(2rem, 6vw, 8rem); }
-  .inq-intro { display: grid; gap: 1.25rem; align-content: start; position: sticky; top: calc(var(--header-h) + 2rem); }
-  .inq-intro h2 { font-size: var(--step-3); }
-  .inq-lede { color: var(--ink-2); font-size: var(--step-1); line-height: 1.5; max-inline-size: 30ch; }
-  @media (max-width: 860px) {
-    .inq-grid { grid-template-columns: 1fr; }
-    .inq-intro { position: static; }
-  }
-
-  /* ================= REDUCED MOTION ================= */
-  @media (prefers-reduced-motion: reduce) {
-    .hero-media, .hero-rule, .line > span, .hero-eyebrow, .hero-lede, .hero-ctas { animation: fade 400ms ease both; }
-    .hero-media img, .hero-content, .band-track { animation: none !important; }
-    .w { animation: none !important; }
-    .scroll-cue span { animation: none; }
-    @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
-  }
+  .inquiry { background: var(--bg-raised); }
+  .inq-intro { display: grid; gap: var(--sp-2); align-content: start; }
+  .inq-lede { color: var(--ink-2); max-inline-size: 36ch; }
 </style>

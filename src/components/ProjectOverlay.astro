@@ -26,12 +26,11 @@ const data = Object.fromEntries(
     <div class="po-body" data-po-body>
       <div class="wrap po-grid">
         <div class="po-head">
-          <p class="kicker" data-po-cat></p>
+          <p class="meta-label" data-po-cat></p>
           <h2 id="po-name" data-po-name></h2>
           <p class="po-summary" data-po-summary></p>
           <button type="button" class="btn" data-po-inquire>
             {s.inquireSimilar}
-            <svg class="arrow" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13m-5-6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </button>
         </div>
         <dl class="po-facts" data-po-facts>
@@ -69,25 +68,24 @@ const data = Object.fromEntries(
     inset-block-start: calc(1rem + env(safe-area-inset-top, 0px));
     inset-inline-end: var(--gutter);
     inline-size: 3rem; block-size: 3rem; display: grid; place-items: center;
-    border-radius: 999px; background: rgb(var(--bg-rgb) / 0.6); color: var(--ink);
-    -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+    border-radius: 2px; background: var(--bg); color: var(--ink);
     box-shadow: inset 0 0 0 1px var(--line-strong);
     transition: transform var(--dur-press) var(--ease-out), opacity 200ms ease;
   }
   .po-close:active { transform: scale(0.94); }
-  .po-body { position: relative; margin-block-start: -6rem; padding-block-end: calc(4rem + env(safe-area-inset-bottom, 0px)); }
-  .po-grid { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 4fr); gap: 3rem clamp(2rem, 5vw, 6rem); align-items: end; }
+  .po-body { position: relative; margin-block-start: calc(var(--sp-7) * -1); padding-block-end: calc(4rem + env(safe-area-inset-bottom, 0px)); }
+  .po-grid { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 4fr); gap: var(--sp-5); align-items: end; }
   @media (max-width: 860px) { .po-grid { grid-template-columns: 1fr; } }
-  .po-head { display: grid; gap: 1.25rem; justify-items: start; }
+  .po-head { display: grid; gap: var(--sp-2); justify-items: start; }
   .po-head h2 { font-size: var(--step-3); }
-  .po-summary { color: var(--ink-2); font-size: var(--step-1); line-height: 1.55; max-inline-size: 40ch; }
-  .po-facts { margin: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem 2rem; border-block-start: 1px solid var(--line); padding-block-start: 1.5rem; }
+  .po-summary { color: var(--ink-2); font-size: var(--step-1); line-height: 1.6; max-inline-size: 48ch; }
+  .po-facts { margin: 0; display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-3) var(--sp-4); border-block-start: 1px solid var(--line); padding-block-start: var(--sp-3); }
   .po-facts dt { color: var(--ink-3); font-size: var(--step--1); }
   :global(html[lang='ar']) .po-facts dt { font-size: 0.95rem; }
   .po-facts dd { margin: 0.25rem 0 0; }
   .po-facts [hidden] { display: none; }
   .po-gallery {
-    margin-block-start: clamp(3rem, 6vw, 5rem);
+    margin-block-start: var(--sp-6);
     display: grid; grid-auto-flow: column; grid-auto-columns: min(82vw, 1100px);
     gap: 1rem; overflow-x: auto; scroll-snap-type: x mandatory;
     padding-inline: var(--gutter); scroll-padding-inline: var(--gutter);

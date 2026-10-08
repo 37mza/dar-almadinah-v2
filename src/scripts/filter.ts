@@ -14,11 +14,8 @@ if (group && grid) {
       it.hidden = !on;
       if (on) {
         shown++;
-        // Cards revealed by the filter shouldn't wait for a scroll reveal
-        it.querySelectorAll('[data-reveal], [data-reveal-img]').forEach((el) => el.classList.add('is-in'));
       }
     }
-    grid.classList.toggle('is-filtered', cat !== 'all');
     if (empty) empty.hidden = shown > 0;
     buttons.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.filter === cat)));
   };

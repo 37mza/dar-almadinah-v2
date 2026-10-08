@@ -6,7 +6,7 @@ const { lang, page } = Astro.props;
 const s = t(lang);
 const other = s.otherLangCode as Lang;
 ---
-<header class="site-header" data-header data-over-hero={page === '' ? 'true' : 'false'}>
+<header class="site-header">
   <div class="wrap bar">
     <a href={`/${lang}/`} class="brand" aria-label={s.firm}>
       <Wordmark lang={lang} />
@@ -35,17 +35,13 @@ const other = s.otherLangCode as Lang;
   .site-header {
     position: fixed; inset-inline: 0; top: 0; z-index: 40;
     padding-top: env(safe-area-inset-top, 0px);
-    transition: background-color 400ms ease, box-shadow 400ms ease;
-  }
-  .site-header.is-solid {
-    background: rgb(var(--bg-rgb) / 0.8);
-    -webkit-backdrop-filter: blur(14px) saturate(140%);
-    backdrop-filter: blur(14px) saturate(140%);
+    /* Always a solid bar: readable over any render, in both schemes */
+    background: var(--bg);
     box-shadow: 0 1px 0 var(--line);
   }
   .bar { display: flex; align-items: center; justify-content: space-between; block-size: var(--header-h); gap: 1rem; }
   .brand { display: flex; align-items: center; min-inline-size: 0; }
-  .nav { display: flex; align-items: center; gap: clamp(0.9rem, 0.4rem + 1.6vw, 2rem); font-size: var(--step--1); }
+  .nav { display: flex; align-items: center; gap: var(--sp-3); font-size: var(--step--1); }
   :global(html[lang='ar']) .nav { font-size: var(--step-0); }
   .nav-link { color: var(--ink-2); transition: color 200ms ease; padding-block: 0.5rem; }
   .nav-link[aria-current='page'] { color: var(--ink); }
@@ -55,7 +51,7 @@ const other = s.otherLangCode as Lang;
   /* Theme toggle: shows the scheme you'll switch TO. Icons swap with a short scale + blur crossfade. */
   .theme-toggle {
     position: relative; inline-size: 2.5rem; block-size: 2.5rem; flex: none;
-    display: grid; place-items: center; border-radius: 999px; color: var(--ink-2);
+    display: grid; place-items: center; border-radius: 2px; color: var(--ink-2);
     transition: color 200ms ease, background-color 200ms ease, transform var(--dur-press) var(--ease-out);
   }
   .theme-toggle:active { transform: scale(0.94); }
@@ -68,9 +64,9 @@ const other = s.otherLangCode as Lang;
   .btn--sm { min-block-size: 2.5rem; padding-inline: 1.1rem; font-size: inherit; }
   .show-xs, .show-xs-sr { display: none; }
   .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
-  @media (max-width: 720px) { .hide-sm { display: none; } }
+  @media (max-width: 720px) { .hide-sm { display: none; } .nav { gap: var(--sp-2); } }
   @media (max-width: 420px) {
-    .nav { gap: 0.6rem; }
+    .nav { gap: var(--sp-1); }
     .hide-xs { display: none; }
     .show-xs { display: block; }
     .show-xs-sr { display: inline; }

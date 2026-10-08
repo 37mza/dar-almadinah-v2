@@ -36,11 +36,18 @@ request already filled in.
 Framework preset: Astro. Build command `npm run build`, output `dist`. `vercel.json` redirects `/` to `/ar/`.
 Point `www.daralmadinah.com.sa` at this project only after the preview is approved.
 
-## Motion notes
+## Design rules
 
-Built to Emil Kowalski's design-engineering rules: custom easing curves, transform/opacity/clip-path only,
-hover effects gated to real pointers, interruptible project expand (WAAPI), CSS-only scroll-driven effects
-with static fallbacks, and a gentler variant for `prefers-reduced-motion`.
+Deliberately plain, to avoid the look of template / AI-generated sites:
+
+- **Type:** IBM Plex Sans + IBM Plex Sans Arabic only. Largest text is the home hero at 48px; page titles 40px;
+  section headings 26px; body 16–18px. Scale lives in `--step-*` tokens in `src/styles/global.css`.
+- **Spacing:** only the 8px-based `--sp-1` … `--sp-7` tokens. Don't add one-off rem values.
+- **No:** gradient text, glass/blur panels, pill buttons, labels above headings, icon arrows in buttons,
+  scroll-triggered fade-ins, marquees, emoji, em dashes in copy, buzzword copy.
+- **Motion is only where it explains something:** the project card opening into its full view, the inquiry drawer,
+  the filter reflow, button press feedback, and a 220 ms crossfade when switching light/dark.
+  All of it respects `prefers-reduced-motion`.
 
 ## Managing projects (CMS)
 
