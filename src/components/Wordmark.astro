@@ -1,0 +1,30 @@
+---
+// PLACEHOLDER wordmark — replace with the final logo (SVG) once the identity is done.
+import type { Lang } from '../i18n/strings';
+interface Props { lang: Lang; size?: 'md' | 'lg' }
+const { lang, size = 'md' } = Astro.props;
+---
+<span class:list={['wm', size]}>
+  <svg class="mark" viewBox="0 0 32 40" aria-hidden="true">
+    <path d="M0 40V14C0 6.3 7.2 0 16 0s16 6.3 16 14v26H22V16a6 6 0 0 0-12 0v24H0Z" fill="var(--red)"/>
+  </svg>
+  <span class="txt">
+    {lang === 'ar'
+      ? <><span class="name">دار المدينة</span><span class="sub">للاستشارات الهندسية</span></>
+      : <><span class="name">Dar Al Madinah</span><span class="sub">Engineering Consultants</span></>}
+  </span>
+</span>
+
+<style>
+  .wm { display: inline-flex; align-items: center; gap: 0.7rem; white-space: nowrap; }
+  .mark { inline-size: 1.35rem; block-size: auto; flex: none; }
+  .txt { display: flex; flex-direction: column; line-height: 1.05; }
+  .name { font-weight: 600; font-size: 1.05rem; letter-spacing: 0.01em; }
+  .sub { font-size: 0.68rem; color: var(--ink-3); letter-spacing: 0.08em; text-transform: uppercase; margin-top: 0.2rem; }
+  :global(html[lang='ar']) .name { font-size: 1.15rem; letter-spacing: 0; }
+  :global(html[lang='ar']) .sub { font-size: 0.75rem; letter-spacing: 0; text-transform: none; margin-top: 0.1rem; }
+  .lg .mark { inline-size: 2.25rem; }
+  .lg .name { font-size: 1.6rem; }
+  .lg .sub { font-size: 0.8rem; }
+  @media (max-width: 380px) { .md .sub { display: none; } }
+</style>

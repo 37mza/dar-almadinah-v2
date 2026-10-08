@@ -1,0 +1,9 @@
+---
+import Base from '../../../layouts/Base.astro';
+import ProjectsPage from '../../../components/ProjectsPage.astro';
+import { t } from '../../../i18n/strings';
+const s = t('en');
+---
+<Base lang="en" title={s.meta.projectsTitle} description={s.meta.projectsDesc} page="projects">
+  <ProjectsPage lang="en" />
+</Base>

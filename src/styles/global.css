@@ -1,0 +1,176 @@
+/* ============================================================
+   Dar Al Madinah — design tokens and base styles
+   ============================================================ */
+:root {
+  /* Color */
+  --red: #ac2027;
+  --red-deep: #7d151b;
+  --red-ink: #e04a50; /* red tuned for text on the dark background (contrast) */
+  --bg: #0a0a0b;
+  --bg-raised: #131315;
+  --bg-sunken: #060607;
+  --ink: #edebe6;
+  --ink-2: #b4b0a9;
+  --ink-3: #7c7973;
+  --line: rgba(237, 235, 230, 0.12);
+  --line-strong: rgba(237, 235, 230, 0.24);
+
+  /* Type */
+  --font-ar: 'IBM Plex Sans Arabic', system-ui, sans-serif;
+  --font-en: 'IBM Plex Sans', system-ui, sans-serif;
+  --step--1: clamp(0.8rem, 0.78rem + 0.1vw, 0.875rem);
+  --step-0: clamp(1rem, 0.96rem + 0.2vw, 1.125rem);
+  --step-1: clamp(1.2rem, 1.1rem + 0.5vw, 1.5rem);
+  --step-2: clamp(1.5rem, 1.3rem + 1vw, 2.25rem);
+  --step-3: clamp(2rem, 1.5rem + 2.4vw, 3.75rem);
+  --step-hero: clamp(3.25rem, 1.6rem + 8.4vw, 10.5rem);
+
+  /* Space & layout */
+  --gutter: clamp(1rem, 0.5rem + 2.5vw, 3rem);
+  --section: clamp(5rem, 3rem + 9vw, 11rem);
+  --max: 1440px;
+  --header-h: 72px;
+
+  /* Motion (Emil Kowalski curves) */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+  --dur-press: 140ms;
+  --dur-ui: 220ms;
+  --dur-drawer: 460ms;
+  --dur-reveal: 1100ms;
+
+  color-scheme: dark;
+}
+
+/* ---------- Reset & mobile baseline ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+html {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-text-size-adjust: 100%;
+  background: var(--bg);
+  scroll-behavior: smooth;
+}
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-en);
+  font-size: var(--step-0);
+  line-height: 1.6;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+html[lang='ar'] body { font-family: var(--font-ar); line-height: 1.8; }
+img, svg { display: block; max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+h1, h2, h3, p { margin: 0; }
+h1, h2, h3 { font-weight: 500; line-height: 1.05; letter-spacing: -0.02em; text-wrap: balance; }
+html[lang='ar'] h1, html[lang='ar'] h2, html[lang='ar'] h3 { letter-spacing: 0; line-height: 1.25; }
+p { text-wrap: pretty; }
+button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+input, textarea, select { font: inherit; font-size: 16px; color: inherit; }
+
+button, a, [role='button'], label {
+  touch-action: manipulation;
+}
+button, [role='button'], .btn, .chip {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+:focus-visible { outline: 2px solid var(--red-ink); outline-offset: 3px; border-radius: 2px; }
+::selection { background: var(--red); color: #fff; }
+
+.skip {
+  position: absolute; inset-inline-start: 1rem; top: -100px; z-index: 100;
+  background: var(--ink); color: var(--bg); padding: 0.6rem 1rem;
+}
+.skip:focus { top: 1rem; }
+
+.wrap { width: 100%; max-width: var(--max); margin-inline: auto; padding-inline: var(--gutter); }
+
+.kicker {
+  display: inline-flex; align-items: center; gap: 0.75rem;
+  font-size: var(--step--1); color: var(--ink-3);
+  text-transform: uppercase; letter-spacing: 0.14em;
+}
+html[lang='ar'] .kicker { text-transform: none; letter-spacing: 0; font-size: var(--step-0); }
+.kicker::before { content: ''; inline-size: 1.75rem; block-size: 1px; background: var(--red); }
+
+/* ---------- Buttons ---------- */
+.btn {
+  --btn-bg: var(--red);
+  --btn-ink: #fff;
+  position: relative;
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.6rem;
+  min-block-size: 3.25rem; padding-inline: 1.5rem;
+  background: var(--btn-bg); color: var(--btn-ink);
+  font-size: var(--step-0); font-weight: 500;
+  border-radius: 999px;
+  transition: transform var(--dur-press) var(--ease-out), background-color var(--dur-ui) ease;
+}
+.btn:active { transform: scale(0.97); }
+.btn--ghost { --btn-bg: transparent; --btn-ink: var(--ink); box-shadow: inset 0 0 0 1px var(--line-strong); }
+.btn .arrow { transition: transform var(--dur-ui) var(--ease-out); }
+html[dir='rtl'] .btn .arrow { transform: scaleX(-1); }
+@media (hover: hover) and (pointer: fine) {
+  .btn:hover { --btn-bg: var(--red-deep); }
+  .btn--ghost:hover { --btn-bg: rgba(237, 235, 230, 0.06); }
+  .btn:hover .arrow { transform: translateX(3px); }
+  html[dir='rtl'] .btn:hover .arrow { transform: scaleX(-1) translateX(3px); }
+}
+
+.link-line {
+  background: linear-gradient(currentColor, currentColor) no-repeat;
+  background-size: 0% 1px; background-position: 100% 100%;
+  transition: background-size 320ms var(--ease-out);
+  padding-block-end: 2px;
+}
+html[dir='rtl'] .link-line { background-position: 0% 100%; }
+@media (hover: hover) and (pointer: fine) {
+  .link-line:hover { background-size: 100% 1px; background-position: 0% 100%; }
+  html[dir='rtl'] .link-line:hover { background-position: 100% 100%; }
+}
+
+/* ---------- Scroll reveals (only hide when JS is running) ---------- */
+html.js [data-reveal] {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 900ms var(--ease-out), transform 900ms var(--ease-out);
+  transition-delay: calc(var(--i, 0) * 70ms);
+}
+html.js [data-reveal].is-in { opacity: 1; transform: none; }
+
+/* Image reveal: clip from the bottom edge, inner image settles from a slight zoom */
+html.js [data-reveal-img] { clip-path: inset(100% 0 0 0); }
+html.js [data-reveal-img] img { transform: scale(1.18); }
+html.js [data-reveal-img].is-in {
+  clip-path: inset(0 0 0 0);
+  transition: clip-path var(--dur-reveal) var(--ease-in-out);
+  transition-delay: calc(var(--i, 0) * 90ms);
+}
+html.js [data-reveal-img].is-in img {
+  transform: scale(1);
+  transition: transform 1600ms var(--ease-out);
+  transition-delay: calc(var(--i, 0) * 90ms);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.js [data-reveal] { transform: none; transition: opacity 400ms ease; }
+  html.js [data-reveal-img] { clip-path: none; opacity: 0; transition: opacity 400ms ease; }
+  html.js [data-reveal-img] img { transform: none; transition: none; }
+  html.js [data-reveal-img].is-in { opacity: 1; }
+}
+
+/* ---------- Page-to-page transitions (cross-document View Transitions) ---------- */
+@view-transition { navigation: auto; }
+::view-transition-old(root) { animation: 260ms var(--ease-out) both vt-out; }
+::view-transition-new(root) { animation: 520ms var(--ease-out) both vt-in; }
+@keyframes vt-out { to { opacity: 0; } }
+@keyframes vt-in { from { opacity: 0; transform: translateY(16px); } }
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root), ::view-transition-new(root) { animation-duration: 0.01ms; }
+}

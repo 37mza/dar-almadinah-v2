@@ -1,0 +1,88 @@
+---
+import { t, type Lang } from '../i18n/strings';
+import InquiryForm from './InquiryForm.astro';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const s = t(lang).inquiry;
+---
+<dialog class="drawer" data-inquiry-panel aria-labelledby="drawer-title">
+  <div class="drawer-inner">
+    <div class="drawer-head">
+      <h2 id="drawer-title">{s.title}</h2>
+      <button type="button" class="close" data-close aria-label={s.close}>
+        <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <p class="lede">{s.lede}</p>
+    <InquiryForm lang={lang} id="panel" compact />
+  </div>
+</dialog>
+
+<style>
+  /* Drawer: slides in from the inline-end edge (right in English, left in Arabic). */
+  .drawer {
+    --from: translateX(100%);
+    position: fixed;
+    inset-block: 0;
+    inset-inline-start: auto;
+    inset-inline-end: 0;
+    margin: 0;
+    max-block-size: none;
+    max-inline-size: none;
+    block-size: 100dvh;
+    inline-size: min(560px, 100vw);
+    padding: 0;
+    border: 0;
+    background: var(--bg-raised);
+    color: var(--ink);
+    box-shadow: -40px 0 80px rgba(0, 0, 0, 0.45);
+    overscroll-behavior: contain;
+    transform: translateX(0);
+    transition:
+      transform 260ms var(--ease-out),
+      display 260ms allow-discrete,
+      overlay 260ms allow-discrete;
+  }
+  :global(html[dir='rtl']) .drawer { --from: translateX(-100%); right: auto; left: 0; box-shadow: 40px 0 80px rgba(0, 0, 0, 0.45); }
+  .drawer:not([open]) { transform: var(--from); }
+  .drawer[open] {
+    transition-duration: var(--dur-drawer);
+    transition-timing-function: var(--ease-drawer);
+  }
+  @starting-style { .drawer[open] { transform: var(--from); } }
+
+  .drawer::backdrop {
+    background: rgba(0, 0, 0, 0);
+    -webkit-backdrop-filter: blur(0px);
+    backdrop-filter: blur(0px);
+    transition: background-color 260ms ease, backdrop-filter 260ms ease, display 260ms allow-discrete, overlay 260ms allow-discrete;
+  }
+  .drawer[open]::backdrop { background: rgba(0, 0, 0, 0.55); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); transition-duration: 400ms; }
+  @starting-style { .drawer[open]::backdrop { background: rgba(0, 0, 0, 0); -webkit-backdrop-filter: blur(0px); backdrop-filter: blur(0px); } }
+
+  .drawer-inner {
+    block-size: 100%;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: calc(1.5rem + env(safe-area-inset-top, 0px)) clamp(1.25rem, 4vw, 2.75rem) calc(2rem + env(safe-area-inset-bottom, 0px));
+    display: grid; align-content: start; gap: 1.25rem;
+  }
+  .drawer-head { display: flex; align-items: start; justify-content: space-between; gap: 1rem; }
+  .drawer-head h2 { font-size: var(--step-2); }
+  .lede { color: var(--ink-2); margin-block-end: 0.75rem; }
+  .close {
+    inline-size: 2.75rem; block-size: 2.75rem; flex: none;
+    display: grid; place-items: center; border-radius: 999px;
+    box-shadow: inset 0 0 0 1px var(--line-strong);
+    transition: transform var(--dur-press) var(--ease-out), background-color 200ms ease;
+  }
+  .close:active { transform: scale(0.94); }
+  @media (hover: hover) and (pointer: fine) { .close:hover { background: rgba(237,235,230,0.06); } }
+
+  @media (prefers-reduced-motion: reduce) {
+    .drawer, .drawer:not([open]) { transform: none; }
+    @starting-style { .drawer[open] { transform: none; opacity: 0; } }
+    .drawer { transition: opacity 200ms ease, display 200ms allow-discrete, overlay 200ms allow-discrete; }
+    .drawer:not([open]) { opacity: 0; }
+  }
+</style>

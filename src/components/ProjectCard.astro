@@ -1,0 +1,64 @@
+---
+import { t, type Lang } from '../i18n/strings';
+import type { Project } from '../data/projects';
+interface Props { lang: Lang; project: Project; i?: number; size?: 'lg' | 'md' | 'sm'; eager?: boolean }
+const { lang, project: p, i = 0, size = 'md', eager = false } = Astro.props;
+const s = t(lang);
+const c = p[lang];
+---
+<article class:list={['card', size]} data-category={p.category} style={`--i:${i % 3}`}>
+  <a href={`/${lang}/projects/#${p.slug}`} class="hit" data-project={p.slug} aria-label={`${s.projects.view}: ${c.name}`}>
+    <div class="media" data-reveal-img data-media>
+      <img src={p.images[0]} alt="" loading={eager ? 'eager' : 'lazy'} decoding="async" width="1600" height="1000" />
+      {p.placeholder && <span class="ph-tag">{lang === 'ar' ? 'صورة مؤقتة' : 'Placeholder'}</span>}
+    </div>
+    <div class="meta" data-reveal>
+      <h3 class="name">{c.name}</h3>
+      <p class="sub">
+        <span>{s.projects.filters[p.category]}</span>
+        {c.location && <><span class="dot" aria-hidden="true">·</span><span>{c.location}</span></>}
+        {p.year && <><span class="dot" aria-hidden="true">·</span><span>{p.year}</span></>}
+      </p>
+    </div>
+  </a>
+</article>
+
+<style>
+  .card { min-inline-size: 0; }
+  .hit { display: grid; gap: 1.1rem; }
+  .media {
+    position: relative; overflow: hidden;
+    aspect-ratio: 4 / 3;
+    background: var(--bg-raised);
+    border-radius: 2px;
+  }
+  .lg .media { aspect-ratio: 16 / 10; }
+  .sm .media { aspect-ratio: 4 / 5; }
+  .media img { inline-size: 100%; block-size: 100%; object-fit: cover; }
+  .media::after {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(10,10,11,0.35), transparent 45%);
+    opacity: 0; transition: opacity 400ms ease;
+  }
+  .ph-tag {
+    position: absolute; inset-block-start: 0.75rem; inset-inline-start: 0.75rem;
+    font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 0.25rem 0.55rem; border-radius: 999px;
+    background: rgba(10,10,11,0.6); color: var(--ink-2);
+  }
+  :global(html[lang='ar']) .ph-tag { letter-spacing: 0; text-transform: none; font-size: 0.78rem; }
+  .name { font-size: var(--step-1); font-weight: 500; letter-spacing: -0.01em; }
+  .lg .name { font-size: var(--step-2); }
+  .sub { display: flex; flex-wrap: wrap; gap: 0.2rem 0.5rem; color: var(--ink-3); font-size: var(--step--1); margin-block-start: 0.35rem; }
+  :global(html[lang='ar']) .sub { font-size: 0.95rem; }
+  .dot { color: var(--red-ink); }
+
+  /* Hover: image eases in slightly; gated to real pointers so taps don't stick */
+  @media (hover: hover) and (pointer: fine) {
+    .media img { transition: transform 900ms var(--ease-out); }
+    :global(html.js) .media.is-in img { transition: transform 900ms var(--ease-out); }
+    .hit:hover .media img { transform: scale(1.04); }
+    .hit:hover .media::after { opacity: 1; }
+  }
+  .hit:active .media { transform: scale(0.99); transition: transform var(--dur-press) var(--ease-out); }
+</style>

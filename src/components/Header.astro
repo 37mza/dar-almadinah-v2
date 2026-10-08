@@ -1,0 +1,58 @@
+---
+import { t, type Lang } from '../i18n/strings';
+import Wordmark from './Wordmark.astro';
+interface Props { lang: Lang; page: '' | 'projects' }
+const { lang, page } = Astro.props;
+const s = t(lang);
+const other = s.otherLangCode as Lang;
+---
+<header class="site-header" data-header data-over-hero={page === '' ? 'true' : 'false'}>
+  <div class="wrap bar">
+    <a href={`/${lang}/`} class="brand" aria-label={s.firm}>
+      <Wordmark lang={lang} />
+    </a>
+    <nav class="nav" aria-label={lang === 'ar' ? 'التنقل الرئيسي' : 'Main'}>
+      <a href={`/${lang}/projects/`} class="nav-link link-line" aria-current={page === 'projects' ? 'page' : undefined}>{s.nav.work}</a>
+      <a href={`/${lang}/#practice`} class="nav-link link-line hide-sm">{s.nav.practice}</a>
+      <a href={`/${other}/${page ? page + '/' : ''}`} class="nav-link lang" lang={other} hreflang={other}>{s.otherLang}</a>
+      <button type="button" class="btn btn--sm" data-inquire>
+        <span class="hide-xs">{s.nav.inquire}</span>
+        <svg class="show-xs" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H8l-4 4V5Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+        <span class="sr-only show-xs-sr">{s.nav.inquire}</span>
+      </button>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: fixed; inset-inline: 0; top: 0; z-index: 40;
+    padding-top: env(safe-area-inset-top, 0px);
+    transition: background-color 400ms ease, box-shadow 400ms ease;
+  }
+  .site-header.is-solid {
+    background: rgba(10, 10, 11, 0.78);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+    backdrop-filter: blur(14px) saturate(140%);
+    box-shadow: 0 1px 0 var(--line);
+  }
+  .bar { display: flex; align-items: center; justify-content: space-between; block-size: var(--header-h); gap: 1rem; }
+  .brand { display: flex; align-items: center; min-inline-size: 0; }
+  .nav { display: flex; align-items: center; gap: clamp(0.9rem, 0.4rem + 1.6vw, 2rem); font-size: var(--step--1); }
+  :global(html[lang='ar']) .nav { font-size: var(--step-0); }
+  .nav-link { color: var(--ink-2); transition: color 200ms ease; padding-block: 0.5rem; }
+  .nav-link[aria-current='page'] { color: var(--ink); }
+  .lang { font-family: var(--font-en); }
+  .lang:lang(ar) { font-family: var(--font-ar); }
+  @media (hover: hover) and (pointer: fine) { .nav-link:hover { color: var(--ink); } }
+  .btn--sm { min-block-size: 2.5rem; padding-inline: 1.1rem; font-size: inherit; }
+  .show-xs, .show-xs-sr { display: none; }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  @media (max-width: 720px) { .hide-sm { display: none; } }
+  @media (max-width: 420px) {
+    .hide-xs { display: none; }
+    .show-xs { display: block; }
+    .show-xs-sr { display: inline; }
+    .btn--sm { inline-size: 2.75rem; padding: 0; }
+  }
+</style>
