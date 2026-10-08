@@ -26,6 +26,7 @@ export interface Project {
   metric?: { value: number; label: Bi<string> };
   coords?: { lat: number; lng: number };
   images: string[]; // optimized; first is the cover (2000px). Empty = map-only project
+  coverSrc?: string; // CMS path of the original cover, for derived images (link previews)
   thumb?: string; // optimized cover (960px) for cards
   ar: { name: string; location?: string; status?: string; summary?: string };
   en: { name: string; location?: string; status?: string; summary?: string };
@@ -95,6 +96,7 @@ async function loadProjects(): Promise<Project[]> {
         metric: hasMetric ? { value: e.metricValue!, label: { en: e.metricLabelEn.trim(), ar: e.metricLabelAr.trim() } } : undefined,
         coords: e.latitude != null && e.longitude != null ? { lat: e.latitude, lng: e.longitude } : undefined,
         images: cover ? [cover, ...gallery] : gallery,
+        coverSrc: e.cover ?? undefined,
         thumb,
         en: { name: e.nameEn, location: blank(e.locationEn), status: blank(e.statusEn), summary: blank(e.summaryEn) },
         ar: { name: e.nameAr, location: blank(e.locationAr), status: blank(e.statusAr), summary: blank(e.summaryAr) },
@@ -184,3 +186,13 @@ export const partners = await loadPartners();
 export const credentials = await loadCredentials();
 export const figures = await loadFigures();
 export const company = await loadCompany();
+
+/** 1200×630 JPEG link-preview image (og:image), cropped from the Home hero render. */
+async function loadOgImage() {
+  const src = (projects.find((p) => p.featured) ?? projects[0])?.coverSrc;
+  const meta = src ? files[src]?.default : undefined;
+  if (!meta) return undefined;
+  const img = await getImage({ src: meta, width: 1200, height: 630, fit: 'cover', format: 'jpg', quality: 82 });
+  return { src: img.src, width: 1200, height: 630 };
+}
+export const ogImage = await loadOgImage();

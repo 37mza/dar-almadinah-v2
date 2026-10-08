@@ -1,0 +1,9 @@
+---
+import Base from '../../../layouts/Base.astro';
+import PrivacyPage from '../../../components/PrivacyPage.astro';
+import { t } from '../../../i18n/strings';
+const s = t('en');
+---
+<Base lang="en" title={s.meta.privacyTitle} description={s.meta.privacyDesc} page="privacy">
+  <PrivacyPage lang="en" />
+</Base>

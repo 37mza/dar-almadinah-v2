@@ -1,7 +1,7 @@
 ---
 import { t, type Lang } from '../i18n/strings';
 import Wordmark from './Wordmark.astro';
-interface Props { lang: Lang; page: '' | 'projects' | 'about' }
+interface Props { lang: Lang; page: '' | 'projects' | 'about' | 'contact' | 'privacy' }
 const { lang, page } = Astro.props;
 const s = t(lang);
 const other = s.otherLangCode as Lang;

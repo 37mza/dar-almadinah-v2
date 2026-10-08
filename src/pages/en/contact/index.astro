@@ -1,0 +1,9 @@
+---
+import Base from '../../../layouts/Base.astro';
+import ContactPage from '../../../components/ContactPage.astro';
+import { t } from '../../../i18n/strings';
+const s = t('en');
+---
+<Base lang="en" title={s.meta.contactTitle} description={s.meta.contactDesc} page="contact">
+  <ContactPage lang="en" />
+</Base>

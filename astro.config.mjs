@@ -3,9 +3,12 @@ import { defineConfig } from 'astro/config';
 import react from '@astrojs/react';
 import keystatic from '@keystatic/astro';
 import vercel from '@astrojs/vercel';
+import { siteUrl } from './scripts/site-url.mjs';
+
+const site = siteUrl();
 
 export default defineConfig({
-  site: 'https://www.daralmadinah.com.sa',
+  site,
   trailingSlash: 'ignore',
   // CSS always ships as files, so the Content-Security-Policy can forbid inline <style> blocks.
   build: { inlineStylesheets: 'never' },

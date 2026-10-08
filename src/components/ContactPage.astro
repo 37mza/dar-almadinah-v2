@@ -1,0 +1,57 @@
+---
+import { t, contact, type Lang } from '../i18n/strings';
+import { company } from '../data/projects';
+import InquiryForm from './InquiryForm.astro';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const s = t(lang);
+const c = s.contactPage;
+---
+<section class="page-head">
+  <div class="wrap two-col">
+    <h1 class="page-title">{c.title}</h1>
+    <p class="body">{c.lede}</p>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="details-title">
+  <div class="wrap two-col">
+    <h2 id="details-title">{c.details}</h2>
+    <dl class="details">
+      <div><dt>{c.email}</dt><dd><a class="link-line" href={`mailto:${contact.email}`} dir="ltr">{contact.email}</a></dd></div>
+      <div><dt>{c.phone}</dt><dd><a class="link-line" href={`tel:${contact.phoneTel}`} dir="ltr">{contact.phoneDisplay}</a></dd></div>
+      <div><dt>{c.whatsapp}</dt><dd><a class="link-line" href={contact.whatsapp} target="_blank" rel="noopener" dir="ltr">{contact.phoneDisplay}</a></dd></div>
+      <div><dt>{c.location}</dt><dd>{company.address[lang] ?? s.footer.city}</dd></div>
+      <div><dt>{c.languages}</dt><dd>{c.languagesValue}</dd></div>
+      {company.crNumber && <div><dt>{s.footer.cr}</dt><dd><bdi dir="ltr">{company.crNumber}</bdi></dd></div>}
+    </dl>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="include-title">
+  <div class="wrap two-col">
+    <h2 id="include-title">{c.includeTitle}</h2>
+    <ul class="include">{c.includeItems.map((i) => <li>{i}</li>)}</ul>
+  </div>
+</section>
+
+<section class="section inquiry" aria-labelledby="form-title">
+  <div class="wrap two-col">
+    <h2 id="form-title">{c.formTitle}</h2>
+    <InquiryForm lang={lang} id="contact" />
+  </div>
+</section>
+
+<style>
+  .page-head { padding-block: calc(var(--header-h) + var(--sp-6)) var(--section); }
+  .page-title { font-size: var(--step-3); letter-spacing: var(--track-display); line-height: var(--lead-display); }
+  :global(html[lang='ar']) .page-title { font-weight: 600; }
+  .body { font-size: var(--step-1); line-height: 1.75; color: var(--ink-2); max-inline-size: 62ch; }
+  .details { margin: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--sp-4) var(--sp-5); }
+  @media (max-width: 640px) { .details { grid-template-columns: 1fr; } }
+  .details dt { color: var(--ink-3); font-size: var(--step--1); letter-spacing: var(--track-small); line-height: var(--lead-small); }
+  :global(html[lang='ar']) .details dt { font-size: 0.9375rem; }
+  .details dd { margin: 0.25rem 0 0; font-size: var(--step-1); }
+  .include { margin: 0; padding-inline-start: 1.25rem; display: grid; gap: var(--sp-2); color: var(--ink-2); max-inline-size: 60ch; }
+  .inquiry { background: var(--bg-raised); }
+</style>

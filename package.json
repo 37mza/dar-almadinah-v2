@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "scripts": {
     "dev": "node scripts/vendor.mjs && astro dev",
-    "build": "node scripts/vendor.mjs && astro build && node scripts/security-headers.mjs",
-    "preview": "astro preview"
+    "build": "node scripts/vendor.mjs && astro build && node scripts/vercel-routes.mjs",
+    "preview": "astro preview",
+    "test": "node --test tests/*.test.mjs"
   },
   "dependencies": {
     "@astrojs/react": "^7.0.1",

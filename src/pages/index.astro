@@ -1,4 +1,5 @@
 ---
-// Root: Arabic is the default language. Vercel also redirects / → /ar/ at the edge (vercel.json).
+// Root: Arabic is the default language. On Vercel the redirect (and Markdown negotiation) happens
+// in the routing table first (scripts/vercel-routes.mjs); this page is the fallback elsewhere.
 return Astro.redirect('/ar/');
 ---

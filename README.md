@@ -108,7 +108,7 @@ If the site moves to www.daralmadinah.com.sa, add
 ## Security
 
 - **Headers** (CSP, HSTS, frame denial, etc.) are defined in `security-headers.json` and written into Vercel's
-  build output by `scripts/security-headers.mjs` after every build. To allow a new outside service (e.g. analytics),
+  build output by `scripts/vercel-routes.mjs` after every build. To allow a new outside service (e.g. analytics),
   add its domain to the matching CSP directive there.
 - **No secrets in the repo.** All keys live in Vercel → Settings → Environment Variables. `.env` files are git-ignored.
 - **Uploads:** the build refuses non-image files and images over 15 MB, and names the file in the build log.
@@ -117,3 +117,23 @@ If the site moves to www.daralmadinah.com.sa, add
   (GHSA-9wv6-86v2-598j); remove the override once `@astrojs/vercel` ships a patched version.
 - **Backup / restore:** the GitHub repo is the database. Every CMS save is a commit, so any change can be undone
   from the repo's History (or `git revert`). A fresh clone + `npm ci && npm run build` rebuilds the full site.
+
+## Agents and search
+
+| What | Where it comes from |
+| --- | --- |
+| Markdown version of every page (`Accept: text/markdown`, or `/<lang>/<page>/index.md`) | `src/lib/agent.ts` (built from the same CMS data as the HTML); routing in `scripts/vercel-routes.mjs` |
+| Markdown 404 (status 404) for agents | `src/pages/404.md.ts` + `scripts/vercel-routes.mjs` |
+| `/llms.txt` with "When to use" guidance | `src/pages/llms.txt.ts` |
+| `/sitemap.xml` (hreflang alternates), `/robots.txt` | `src/pages/sitemap.xml.ts`, `src/pages/robots.txt.ts` |
+| Organization + ProfessionalService JSON-LD, og:image (1200×630) | `src/lib/agent.ts`, `src/layouts/Base.astro` |
+| Contact and Privacy pages | `src/components/ContactPage.astro`, `PrivacyPage.astro`, text in `src/i18n/strings.ts` |
+
+The public address in all of these follows Vercel's production domain (`scripts/site-url.mjs`), so it switches to
+www.daralmadinah.com.sa by itself once that domain is attached to this project. Override with `SITE_URL`.
+
+Tests: `npm run build && npm test`. They run real requests through the routing table Vercel receives
+(`tests/vercel-router.mjs` emulates Build Output API v3 routing) and check every machine-readable file.
+
+The privacy page text is a plain-language draft that matches how the site works today; have it reviewed before launch,
+and update it if you add analytics, a newsletter or other services.
