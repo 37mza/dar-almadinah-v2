@@ -56,9 +56,22 @@ Sign in with GitHub; your account needs write access to `37mza/dar-almadinah-v2`
 
 Locally, `npm run dev` then open http://localhost:4321/keystatic: edits go straight to the files on disk.
 
-### One-time GitHub sign-in setup (already documented in chat)
+### One-time GitHub sign-in setup
 
 The live admin needs these Vercel environment variables (Settings → Environment Variables, all environments):
 `KEYSTATIC_GITHUB_CLIENT_ID`, `KEYSTATIC_GITHUB_CLIENT_SECRET`, `KEYSTATIC_SECRET`, `PUBLIC_KEYSTATIC_GITHUB_APP_SLUG`.
 If the site moves to www.daralmadinah.com.sa, add
 `https://www.daralmadinah.com.sa/api/keystatic/github/oauth/callback` to the GitHub App's callback URLs.
+
+## Security
+
+- **Headers** (CSP, HSTS, frame denial, etc.) are defined in `security-headers.json` and written into Vercel's
+  build output by `scripts/security-headers.mjs` after every build. To allow a new outside service (e.g. analytics),
+  add its domain to the matching CSP directive there.
+- **No secrets in the repo.** All keys live in Vercel → Settings → Environment Variables. `.env` files are git-ignored.
+- **Uploads:** the build refuses non-image files and images over 15 MB, and names the file in the build log.
+  The previous version of the site stays live until it's fixed.
+- **Dependencies:** run `npm audit` monthly. `path-to-regexp` is pinned via `overrides` in package.json
+  (GHSA-9wv6-86v2-598j); remove the override once `@astrojs/vercel` ships a patched version.
+- **Backup / restore:** the GitHub repo is the database. Every CMS save is a commit, so any change can be undone
+  from the repo's History (or `git revert`). A fresh clone + `npm ci && npm run build` rebuilds the full site.
