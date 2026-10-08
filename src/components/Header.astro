@@ -15,6 +15,13 @@ const other = s.otherLangCode as Lang;
       <a href={`/${lang}/projects/`} class="nav-link link-line" aria-current={page === 'projects' ? 'page' : undefined}>{s.nav.work}</a>
       <a href={`/${lang}/#practice`} class="nav-link link-line hide-sm">{s.nav.practice}</a>
       <a href={`/${other}/${page ? page + '/' : ''}`} class="nav-link lang" lang={other} hreflang={other}>{s.otherLang}</a>
+      <button type="button" class="theme-toggle" data-theme-toggle
+        data-label-light={lang === 'ar' ? 'التبديل إلى الوضع الفاتح' : 'Switch to light mode'}
+        data-label-dark={lang === 'ar' ? 'التبديل إلى الوضع الداكن' : 'Switch to dark mode'}
+        aria-label={lang === 'ar' ? 'تبديل المظهر' : 'Toggle color scheme'}>
+        <svg class="ico sun" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        <svg class="ico moon" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+      </button>
       <button type="button" class="btn btn--sm" data-inquire>
         <span class="hide-xs">{s.nav.inquire}</span>
         <svg class="show-xs" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H8l-4 4V5Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
@@ -31,7 +38,7 @@ const other = s.otherLangCode as Lang;
     transition: background-color 400ms ease, box-shadow 400ms ease;
   }
   .site-header.is-solid {
-    background: rgba(10, 10, 11, 0.78);
+    background: rgb(var(--bg-rgb) / 0.8);
     -webkit-backdrop-filter: blur(14px) saturate(140%);
     backdrop-filter: blur(14px) saturate(140%);
     box-shadow: 0 1px 0 var(--line);
@@ -45,11 +52,25 @@ const other = s.otherLangCode as Lang;
   .lang { font-family: var(--font-en); }
   .lang:lang(ar) { font-family: var(--font-ar); }
   @media (hover: hover) and (pointer: fine) { .nav-link:hover { color: var(--ink); } }
+  /* Theme toggle: shows the scheme you'll switch TO. Icons swap with a short scale + blur crossfade. */
+  .theme-toggle {
+    position: relative; inline-size: 2.5rem; block-size: 2.5rem; flex: none;
+    display: grid; place-items: center; border-radius: 999px; color: var(--ink-2);
+    transition: color 200ms ease, background-color 200ms ease, transform var(--dur-press) var(--ease-out);
+  }
+  .theme-toggle:active { transform: scale(0.94); }
+  @media (hover: hover) and (pointer: fine) { .theme-toggle:hover { color: var(--ink); background: rgb(var(--ink-rgb) / 0.06); } }
+  .ico { grid-area: 1 / 1; transition: opacity 200ms ease, transform 260ms var(--ease-out), filter 200ms ease; }
+  .moon { opacity: 0; transform: scale(0.6) rotate(-40deg); filter: blur(2px); }
+  :global(html[data-scheme='light']) .moon { opacity: 1; transform: none; filter: none; }
+  :global(html[data-scheme='light']) .sun { opacity: 0; transform: scale(0.6) rotate(40deg); filter: blur(2px); }
+  @media (prefers-reduced-motion: reduce) { .ico { transition: opacity 150ms ease; transform: none !important; filter: none !important; } }
   .btn--sm { min-block-size: 2.5rem; padding-inline: 1.1rem; font-size: inherit; }
   .show-xs, .show-xs-sr { display: none; }
   .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
   @media (max-width: 720px) { .hide-sm { display: none; } }
   @media (max-width: 420px) {
+    .nav { gap: 0.6rem; }
     .hide-xs { display: none; }
     .show-xs { display: block; }
     .show-xs-sr { display: inline; }

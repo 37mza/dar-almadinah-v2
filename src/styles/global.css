@@ -2,18 +2,9 @@
    Dar Al Madinah — design tokens and base styles
    ============================================================ */
 :root {
-  /* Color */
+  /* Brand */
   --red: #ac2027;
   --red-deep: #7d151b;
-  --red-ink: #e04a50; /* red tuned for text on the dark background (contrast) */
-  --bg: #0a0a0b;
-  --bg-raised: #131315;
-  --bg-sunken: #060607;
-  --ink: #edebe6;
-  --ink-2: #b4b0a9;
-  --ink-3: #7c7973;
-  --line: rgba(237, 235, 230, 0.12);
-  --line-strong: rgba(237, 235, 230, 0.24);
 
   /* Type */
   --font-ar: 'IBM Plex Sans Arabic', system-ui, sans-serif;
@@ -40,7 +31,59 @@
   --dur-drawer: 460ms;
   --dur-reveal: 1100ms;
 
+}
+
+/* ---------- Color schemes ----------
+   Dark is the base. Light applies when the visitor's device prefers light (and they haven't
+   chosen dark on the site), or when they pick light with the header toggle (data-theme). */
+:root {
+  --bg: #0a0a0b;
+  --bg-rgb: 10 10 11;
+  --bg-raised: #131315;
+  --bg-sunken: #060607;
+  --ink: #edebe6;
+  --ink-rgb: 237 235 230;
+  --ink-2: #b4b0a9;
+  --ink-3: #7c7973;
+  --red-ink: #e04a50; /* red for text: brightened for contrast on dark */
+  --line: rgb(var(--ink-rgb) / 0.12);
+  --line-strong: rgb(var(--ink-rgb) / 0.24);
+  --shadow-drawer: 0 0 80px rgb(0 0 0 / 0.45);
+  --backdrop: rgb(0 0 0 / 0.55);
+  --hero-scrim: 0.7;
   color-scheme: dark;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme='dark']) {
+    --bg: #f4f2ee;
+    --bg-rgb: 244 242 238;
+    --bg-raised: #ebe8e2;
+    --bg-sunken: #e4e0d9;
+    --ink: #161514;
+    --ink-rgb: 22 21 20;
+    --ink-2: #47443f;
+    --ink-3: #6b6761;
+    --red-ink: #ac2027;
+    --shadow-drawer: 0 0 80px rgb(22 21 20 / 0.16);
+    --backdrop: rgb(22 21 20 / 0.28);
+    --hero-scrim: 0.62;
+    color-scheme: light;
+  }
+}
+:root[data-theme='light'] {
+  --bg: #f4f2ee;
+  --bg-rgb: 244 242 238;
+  --bg-raised: #ebe8e2;
+  --bg-sunken: #e4e0d9;
+  --ink: #161514;
+  --ink-rgb: 22 21 20;
+  --ink-2: #47443f;
+  --ink-3: #6b6761;
+  --red-ink: #ac2027;
+  --shadow-drawer: 0 0 80px rgb(22 21 20 / 0.16);
+  --backdrop: rgb(22 21 20 / 0.28);
+  --hero-scrim: 0.62;
+  color-scheme: light;
 }
 
 /* ---------- Reset & mobile baseline ---------- */
@@ -118,7 +161,7 @@ html[lang='ar'] .kicker { text-transform: none; letter-spacing: 0; font-size: va
 html[dir='rtl'] .btn .arrow { transform: scaleX(-1); }
 @media (hover: hover) and (pointer: fine) {
   .btn:hover { --btn-bg: var(--red-deep); }
-  .btn--ghost:hover { --btn-bg: rgba(237, 235, 230, 0.06); }
+  .btn--ghost:hover { --btn-bg: rgb(var(--ink-rgb) / 0.06); }
   .btn:hover .arrow { transform: translateX(3px); }
   html[dir='rtl'] .btn:hover .arrow { transform: scaleX(-1) translateX(3px); }
 }
@@ -166,11 +209,22 @@ html.js [data-reveal-img].is-in img {
 }
 
 /* ---------- Page-to-page transitions (cross-document View Transitions) ---------- */
-@view-transition { navigation: auto; }
-::view-transition-old(root) { animation: 260ms var(--ease-out) both vt-out; }
-::view-transition-new(root) { animation: 520ms var(--ease-out) both vt-in; }
+@view-transition { navigation: auto; types: page; }
+html:active-view-transition-type(page)::view-transition-old(root) { animation: 260ms var(--ease-out) both vt-out; }
+html:active-view-transition-type(page)::view-transition-new(root) { animation: 520ms var(--ease-out) both vt-in; }
 @keyframes vt-out { to { opacity: 0; } }
 @keyframes vt-in { from { opacity: 0; transform: translateY(16px); } }
+
+/* Theme switch: the new scheme is revealed as a circle growing from the toggle (theme.ts drives it) */
+html:active-view-transition-type(theme)::view-transition-old(root),
+html:active-view-transition-type(theme)::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
+html:active-view-transition-type(theme)::view-transition-old(root) { z-index: 0; }
+html:active-view-transition-type(theme)::view-transition-new(root) { z-index: 1; }
+
+/* Project filter: only the cards move; the rest of the page stays put */
+html:active-view-transition-type(filter)::view-transition-old(root),
+html:active-view-transition-type(filter)::view-transition-new(root) { animation: none; }
+
 @media (prefers-reduced-motion: reduce) {
-  ::view-transition-old(root), ::view-transition-new(root) { animation-duration: 0.01ms; }
+  ::view-transition-old(*), ::view-transition-new(*), ::view-transition-group(*) { animation-duration: 0.01ms !important; }
 }

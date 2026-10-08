@@ -41,14 +41,14 @@ const c = p[lang];
   .media img { inline-size: 100%; block-size: 100%; object-fit: cover; }
   .media::after {
     content: ''; position: absolute; inset: 0;
-    background: linear-gradient(to top, rgba(10,10,11,0.35), transparent 45%);
+    background: linear-gradient(to top, rgb(0 0 0 / 0.3), transparent 45%);
     opacity: 0; transition: opacity 400ms ease;
   }
   .ph-tag {
     position: absolute; inset-block-start: 0.75rem; inset-inline-start: 0.75rem;
     font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase;
     padding: 0.25rem 0.55rem; border-radius: 999px;
-    background: rgba(10,10,11,0.6); color: var(--ink-2);
+    background: rgb(var(--bg-rgb) / 0.7); color: var(--ink-2);
   }
   :global(html[lang='ar']) .ph-tag { letter-spacing: 0; text-transform: none; font-size: 0.78rem; }
   .name { font-size: var(--step-1); font-weight: 500; letter-spacing: -0.01em; }

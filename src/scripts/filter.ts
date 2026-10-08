@@ -28,7 +28,11 @@ if (group && grid) {
     if (!btn || btn.getAttribute('aria-pressed') === 'true') return;
     const cat = btn.dataset.filter!;
     const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (!document.startViewTransition || reduce) { apply(cat); return; }
-    document.startViewTransition(() => apply(cat));
+    const typed = typeof CSS !== 'undefined' && CSS.supports('selector(:active-view-transition-type(x))');
+    if (!document.startViewTransition || !typed || reduce) { apply(cat); return; }
+    const root = document.documentElement;
+    root.classList.add('vt-filter');
+    const vt = document.startViewTransition({ update: () => apply(cat), types: ['filter'] });
+    vt.finished.finally(() => root.classList.remove('vt-filter'));
   });
 }

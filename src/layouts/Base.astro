@@ -27,8 +27,9 @@ const pathFor = (l: Lang) => `/${l}/${page ? page + '/' : ''}`;
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content" />
-    <meta name="theme-color" content="#0a0a0b" />
-    <meta name="color-scheme" content="dark" />
+    <meta name="theme-color" content="#0a0a0b" media="(prefers-color-scheme: dark)" data-theme-color />
+    <meta name="theme-color" content="#f4f2ee" media="(prefers-color-scheme: light)" data-theme-color />
+    <meta name="color-scheme" content="dark light" />
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={site + pathFor(lang)} />
@@ -40,7 +41,20 @@ const pathFor = (l: Lang) => `/${l}/${page ? page + '/' : ''}`;
     <meta property="og:type" content="website" />
     <meta property="og:locale" content={lang === 'ar' ? 'ar_SA' : 'en_US'} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <script is:inline>document.documentElement.classList.add('js');</script>
+    <script is:inline>
+      // Runs before first paint so the page never flashes the wrong scheme.
+      (function () {
+        var d = document.documentElement, saved = null;
+        d.classList.add('js');
+        try { saved = localStorage.getItem('theme'); } catch (e) {}
+        if (saved === 'light' || saved === 'dark') d.setAttribute('data-theme', saved);
+        var scheme = saved || (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+        d.setAttribute('data-scheme', scheme);
+        if (saved) document.querySelectorAll('meta[data-theme-color]').forEach(function (m) {
+          m.removeAttribute('media'); m.setAttribute('content', saved === 'light' ? '#f4f2ee' : '#0a0a0b');
+        });
+      })();
+    </script>
   </head>
   <body>
     <a class="skip" href="#main">{lang === 'ar' ? 'انتقل إلى المحتوى' : 'Skip to content'}</a>
@@ -54,6 +68,7 @@ const pathFor = (l: Lang) => `/${l}/${page ? page + '/' : ''}`;
       import '../scripts/reveal';
       import '../scripts/header';
       import '../scripts/inquiry';
+      import '../scripts/theme';
     </script>
   </body>
 </html>

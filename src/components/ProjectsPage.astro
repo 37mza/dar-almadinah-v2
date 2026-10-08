@@ -31,7 +31,7 @@ const counts = Object.fromEntries(cats.map((c) => [c, c === 'all' ? projects.len
   <div class="wrap">
     <div class="pj-grid" data-grid>
       {projects.map((p, i) => (
-        <div class="pj-item" data-item data-category={p.category} style={`view-transition-name: pj-${p.slug}`}>
+        <div class="pj-item" data-item data-category={p.category} style={`--vtn: pj-${p.slug}`}>
           <ProjectCard lang={lang} project={p} i={i} size="md" eager={i < 2} />
         </div>
       ))}
@@ -79,6 +79,8 @@ const counts = Object.fromEntries(cats.map((c) => [c, c === 'all' ? projects.len
   .pj-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(3rem, 5vw, 5rem) clamp(1rem, 2.5vw, 2.5rem); }
   .pj-item:nth-child(even) { margin-block-start: clamp(0rem, 8vw, 8rem); }
   .pj-item[hidden] { display: none; }
+  /* Cards get transition names only while a filter change is animating */
+  :global(html.vt-filter) .pj-item { view-transition-name: var(--vtn); }
   .pj-grid.is-filtered .pj-item { margin-block-start: 0; }
   @media (max-width: 700px) {
     .pj-grid { grid-template-columns: 1fr; }

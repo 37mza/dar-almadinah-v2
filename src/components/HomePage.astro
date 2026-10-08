@@ -122,14 +122,15 @@ const band = lang === 'ar' ? 'ضيافة · سكني · تجاري · متعدد
   .hero-media img { inline-size: 100%; block-size: 100%; object-fit: cover; }
   .hero-shade {
     position: absolute; inset: 0; z-index: -1;
+    --s: var(--hero-scrim);
     background:
-      linear-gradient(to top, var(--bg) 2%, rgba(10,10,11,0.55) 38%, rgba(10,10,11,0.15) 70%, rgba(10,10,11,0.75) 100%),
-      linear-gradient(to right, rgba(10,10,11,0.7), rgba(10,10,11,0) 60%);
+      linear-gradient(to top, var(--bg) 2%, rgb(var(--bg-rgb) / calc(var(--s) * 0.8)) 38%, rgb(var(--bg-rgb) / calc(var(--s) * 0.2)) 70%, rgb(var(--bg-rgb) / var(--s)) 100%),
+      linear-gradient(to right, rgb(var(--bg-rgb) / var(--s)), rgb(var(--bg-rgb) / 0) 60%);
   }
   :global(html[dir='rtl']) .hero-shade {
     background:
-      linear-gradient(to top, var(--bg) 2%, rgba(10,10,11,0.55) 38%, rgba(10,10,11,0.15) 70%, rgba(10,10,11,0.75) 100%),
-      linear-gradient(to left, rgba(10,10,11,0.7), rgba(10,10,11,0) 60%);
+      linear-gradient(to top, var(--bg) 2%, rgb(var(--bg-rgb) / calc(var(--s) * 0.8)) 38%, rgb(var(--bg-rgb) / calc(var(--s) * 0.2)) 70%, rgb(var(--bg-rgb) / var(--s)) 100%),
+      linear-gradient(to left, rgb(var(--bg-rgb) / var(--s)), rgb(var(--bg-rgb) / 0) 60%);
   }
   .hero-rule {
     position: absolute; inset-block: calc(var(--header-h) + 1.5rem) 0; inset-inline-start: var(--gutter);

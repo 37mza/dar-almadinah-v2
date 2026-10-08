@@ -134,6 +134,6 @@ const key = import.meta.env.PUBLIC_WEB3FORMS_KEY as string | undefined;
   .direct .lbl { inline-size: 100%; }
   .wa { display: inline-flex; align-items: center; gap: 0.45rem; color: var(--ink); padding: 0.45rem 0.85rem; border-radius: 999px; box-shadow: inset 0 0 0 1px var(--line-strong); transition: background-color 200ms ease, transform var(--dur-press) var(--ease-out); }
   .wa:active { transform: scale(0.97); }
-  @media (hover: hover) and (pointer: fine) { .wa:hover { background: rgba(237,235,230,0.06); } }
+  @media (hover: hover) and (pointer: fine) { .wa:hover { background: rgb(var(--ink-rgb) / 0.06); } }
   .hp { position: absolute; inset-inline-start: -9999px; }
 </style>
