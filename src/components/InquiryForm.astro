@@ -13,6 +13,7 @@ const key = import.meta.env.PUBLIC_WEB3FORMS_KEY as string | undefined;
   data-msg-sending={s.sending}
   data-msg-sent={s.sent}
   data-msg-error={s.error}
+  data-msg-wait={lang === 'ar' ? 'تم إرسال طلبك للتو. انتظر قليلًا قبل إرسال طلب آخر.' : 'Your request was just sent. Please wait a moment before sending another.'}
   novalidate
 >
   {key && <input type="hidden" name="access_key" value={key} />}
@@ -23,19 +24,19 @@ const key = import.meta.env.PUBLIC_WEB3FORMS_KEY as string | undefined;
   <div class="grid">
     <label class="field">
       <span class="lbl">{s.name}</span>
-      <input name="name" type="text" autocomplete="name" required enterkeyhint="next" />
+      <input name="name" type="text" autocomplete="name" required minlength="2" maxlength="100" enterkeyhint="next" />
     </label>
     <label class="field">
       <span class="lbl">{s.company} <em>({s.optional})</em></span>
-      <input name="company" type="text" autocomplete="organization" enterkeyhint="next" />
+      <input name="company" type="text" autocomplete="organization" maxlength="120" enterkeyhint="next" />
     </label>
     <label class="field">
       <span class="lbl">{s.email}</span>
-      <input name="email" type="email" autocomplete="email" autocapitalize="none" autocorrect="off" spellcheck="false" required dir="ltr" enterkeyhint="next" />
+      <input name="email" type="email" autocomplete="email" autocapitalize="none" autocorrect="off" spellcheck="false" required maxlength="254" dir="ltr" enterkeyhint="next" />
     </label>
     <label class="field">
       <span class="lbl">{s.phone}</span>
-      <input name="phone" type="tel" inputmode="tel" autocomplete="tel" required dir="ltr" placeholder="+966" enterkeyhint="next" />
+      <input name="phone" type="tel" inputmode="tel" autocomplete="tel" required minlength="7" maxlength="20" pattern="\+?[0-9 \(\)\-]{7,20}" dir="ltr" placeholder="+966" enterkeyhint="next" />
     </label>
   </div>
 
@@ -53,7 +54,7 @@ const key = import.meta.env.PUBLIC_WEB3FORMS_KEY as string | undefined;
 
   <label class="field">
     <span class="lbl">{s.message}</span>
-    <textarea name="message" rows={compact ? 4 : 5} placeholder={s.messageHint} enterkeyhint="send"></textarea>
+    <textarea name="message" rows={compact ? 4 : 5} placeholder={s.messageHint} maxlength="4000" enterkeyhint="send"></textarea>
   </label>
 
   <div class="actions">

@@ -41,20 +41,8 @@ const pathFor = (l: Lang) => `/${l}/${page ? page + '/' : ''}`;
     <meta property="og:type" content="website" />
     <meta property="og:locale" content={lang === 'ar' ? 'ar_SA' : 'en_US'} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <script is:inline>
-      // Runs before first paint so the page never flashes the wrong scheme.
-      (function () {
-        var d = document.documentElement, saved = null;
-        d.classList.add('js');
-        try { saved = localStorage.getItem('theme'); } catch (e) {}
-        if (saved === 'light' || saved === 'dark') d.setAttribute('data-theme', saved);
-        var scheme = saved || (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
-        d.setAttribute('data-scheme', scheme);
-        if (saved) document.querySelectorAll('meta[data-theme-color]').forEach(function (m) {
-          m.removeAttribute('media'); m.setAttribute('content', saved === 'light' ? '#f4f2ee' : '#0a0a0b');
-        });
-      })();
-    </script>
+    <!-- Blocking on purpose: sets the color scheme before first paint (no flash). External so the CSP needs no inline exceptions. -->
+    <script is:inline src="/theme-init.js"></script>
   </head>
   <body>
     <a class="skip" href="#main">{lang === 'ar' ? 'انتقل إلى المحتوى' : 'Skip to content'}</a>

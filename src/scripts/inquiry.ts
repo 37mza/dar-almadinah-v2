@@ -50,8 +50,9 @@ function swapLabel(btn: HTMLButtonElement, text: string) {
 
 function validate(form: HTMLFormElement) {
   let firstBad: HTMLInputElement | null = null;
-  form.querySelectorAll<HTMLInputElement>('input[required], textarea[required]').forEach((el) => {
-    const ok = el.value.trim() !== '' && el.checkValidity();
+  form.querySelectorAll<HTMLInputElement>('input:not([type=hidden]):not([type=radio]):not([type=checkbox]), textarea').forEach((el) => {
+    el.value = el.value.trim();
+    const ok = (!el.required || el.value !== '') && el.checkValidity();
     el.closest('.field')?.classList.toggle('is-invalid', !ok);
     el.setAttribute('aria-invalid', String(!ok));
     if (!ok && !firstBad) firstBad = el;
@@ -64,7 +65,8 @@ document.querySelectorAll<HTMLFormElement>('[data-inquiry-form]').forEach((form)
   const btn = form.querySelector<HTMLButtonElement>('[data-submit]')!;
   const status = form.querySelector<HTMLElement>('[data-status]')!;
   const idleLabel = btn.querySelector('[data-label]')?.textContent ?? '';
-  const { endpoint, mailto, msgSending, msgSent, msgError } = form.dataset;
+  const { endpoint, mailto, msgSending, msgSent, msgError, msgWait } = form.dataset;
+  let lastSent = 0;
 
   form.addEventListener('input', (e) => {
     const field = (e.target as Element).closest('.field');
@@ -80,8 +82,20 @@ document.querySelectorAll<HTMLFormElement>('[data-inquiry-form]').forEach((form)
     status.textContent = '';
     if (!validate(form)) return;
 
-    const data = new FormData(form);
-    if (data.get('botcheck')) return; // honeypot
+    const raw = new FormData(form);
+    if (raw.get('botcheck')) return; // honeypot: bots fill hidden fields, people don't
+    // Only send the fields we expect, with a hard length cap (the browser limits can be bypassed)
+    const allowed: Record<string, number> = { access_key: 100, subject: 120, from_name: 60, name: 100, company: 120, email: 254, phone: 20, project_type: 60, message: 4000 };
+    const data = new FormData();
+    for (const [k, max] of Object.entries(allowed)) {
+      const v = raw.get(k);
+      if (typeof v === 'string' && v) data.set(k, v.slice(0, max));
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(String(data.get('email') ?? ''))) { validate(form); return; }
+
+    // Throttle: one request per 30 s per browser tab, so the button can't be used to spam the inbox
+    const now = Date.now();
+    if (now - lastSent < 30_000) { status.textContent = msgWait ?? ''; status.classList.add('err'); return; }
 
     // No form service configured yet: hand the request to the visitor's email app.
     if (!endpoint) {
@@ -108,6 +122,7 @@ document.querySelectorAll<HTMLFormElement>('[data-inquiry-form]').forEach((form)
         body: data,
       });
       if (!res.ok) throw new Error(String(res.status));
+      lastSent = Date.now();
       form.reset();
       status.textContent = msgSent ?? '';
       status.classList.add('ok');

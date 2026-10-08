@@ -1,0 +1,48 @@
+---
+// Plain, bilingual error page. Never shows technical details or stack traces to visitors.
+import '@fontsource/ibm-plex-sans-arabic/400.css';
+import '@fontsource/ibm-plex-sans/400.css';
+import '../styles/global.css';
+export const prerender = true;
+const is404 = false;
+---
+<!doctype html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <meta name="color-scheme" content="dark light" />
+    <title>{is404 ? 'الصفحة غير موجودة · Page not found' : 'حدث خطأ · Something went wrong'} — Dar Al Madinah</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <script is:inline src="/theme-init.js"></script>
+  </head>
+  <body>
+    <main class="err wrap">
+      <p class="code">{is404 ? '404' : '500'}</p>
+      <div class="cols">
+        <section lang="ar" dir="rtl">
+          <h1>{is404 ? 'هذه الصفحة غير موجودة.' : 'حدث خطأ مؤقت.'}</h1>
+          <p>{is404 ? 'ربما تغيّر الرابط أو حُذفت الصفحة.' : 'نعمل على إصلاحه. حاول مرة أخرى بعد قليل.'}</p>
+          <a class="btn" href="/ar/">الصفحة الرئيسية</a>
+        </section>
+        <section lang="en" dir="ltr">
+          <h1>{is404 ? 'This page doesn’t exist.' : 'Something went wrong on our side.'}</h1>
+          <p>{is404 ? 'The link may have changed or the page was removed.' : 'Please try again in a moment.'}</p>
+          <a class="btn btn--ghost" href="/en/">Home page</a>
+        </section>
+      </div>
+    </main>
+  </body>
+</html>
+
+<style>
+  .err { min-block-size: 100svh; display: grid; align-content: center; gap: 2.5rem; padding-block: 4rem; }
+  .code { font-family: var(--font-en); font-size: clamp(5rem, 3rem + 10vw, 12rem); line-height: 1; color: var(--red-ink); letter-spacing: -0.04em; }
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem 4rem; }
+  @media (max-width: 720px) { .cols { grid-template-columns: 1fr; } }
+  section { display: grid; gap: 1rem; justify-items: start; }
+  section[lang='ar'] { font-family: var(--font-ar); }
+  h1 { font-size: var(--step-2); }
+  p { color: var(--ink-2); }
+</style>
