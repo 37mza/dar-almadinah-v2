@@ -9,6 +9,8 @@ interface Props { lang: Lang }
 const { lang } = Astro.props;
 const s = t(lang);
 const featured = projects.filter((p) => p.featured).slice(0, 4);
+// Hero image: the first featured project's cover (change it by reordering projects in the CMS)
+const heroImg = (featured[0] ?? projects[0])?.images[0];
 const sizes = ['lg', 'sm', 'md', 'md'] as const;
 const words = s.statement.body.split(' ');
 const band = lang === 'ar' ? 'ضيافة · سكني · تجاري · متعدد الاستخدامات · ' : 'Hospitality · Residential · Commercial · Mixed-use · ';
@@ -16,7 +18,7 @@ const band = lang === 'ar' ? 'ضيافة · سكني · تجاري · متعدد
 <!-- HERO -->
 <section class="hero" aria-labelledby="hero-title">
   <div class="hero-media" aria-hidden="true">
-    <img src="/projects/al-suleimanyah-towers/cover.webp" alt="" fetchpriority="high" width="2000" height="1375" />
+    {heroImg && <img src={heroImg} alt="" fetchpriority="high" width="2000" height="1375" />}
   </div>
   <div class="hero-shade" aria-hidden="true"></div>
   <span class="hero-rule" aria-hidden="true"></span>

@@ -41,3 +41,24 @@ Point `www.daralmadinah.com.sa` at this project only after the preview is approv
 Built to Emil Kowalski's design-engineering rules: custom easing curves, transform/opacity/clip-path only,
 hover effects gated to real pointers, interruptible project expand (WAAPI), CSS-only scroll-driven effects
 with static fallbacks, and a gentler variant for `prefers-reduced-motion`.
+
+## Managing projects (CMS)
+
+Projects are edited in the Keystatic admin at **/keystatic** (e.g. https://dar-almadinah-v2.vercel.app/keystatic).
+Sign in with GitHub; your account needs write access to `37mza/dar-almadinah-v2`. Every Save is a commit to
+`main`, and Vercel republishes the site about a minute later.
+
+- Each project is one file in `src/content/projects/<slug>.yaml`; its renders are in `src/assets/projects/<slug>/`.
+- Upload full-size renders (JPG/PNG/WebP). The build converts them to WebP at 960px and 2000px.
+- **Order** controls position (lower first). **Show on the Home page** + Order decide the four Home projects.
+  The first of those is also the large Home hero image.
+- Empty fields (year, area, status, description) are hidden on the site.
+
+Locally, `npm run dev` then open http://localhost:4321/keystatic: edits go straight to the files on disk.
+
+### One-time GitHub sign-in setup (already documented in chat)
+
+The live admin needs these Vercel environment variables (Settings → Environment Variables, all environments):
+`KEYSTATIC_GITHUB_CLIENT_ID`, `KEYSTATIC_GITHUB_CLIENT_SECRET`, `KEYSTATIC_SECRET`, `PUBLIC_KEYSTATIC_GITHUB_APP_SLUG`.
+If the site moves to www.daralmadinah.com.sa, add
+`https://www.daralmadinah.com.sa/api/keystatic/github/oauth/callback` to the GitHub App's callback URLs.
