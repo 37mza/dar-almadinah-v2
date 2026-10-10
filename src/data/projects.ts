@@ -32,15 +32,15 @@ export interface Project {
   en: { name: string; location?: string; status?: string; summary?: string };
 }
 export interface Member {
-  slug: string; name: Bi<string>; role: Bi<string>; specialty: Bi<string | undefined>;
+  slug: string; placeholder?: boolean; name: Bi<string>; role: Bi<string>; specialty: Bi<string | undefined>;
   credentials: string[]; portrait?: string;
 }
-export interface Partner { slug: string; name: Bi<string>; logo?: string; logoIsVector: boolean; url?: string }
+export interface Partner { slug: string; placeholder?: boolean; name: Bi<string>; logo?: string; logoIsVector: boolean; url?: string }
 export interface Credential {
   slug: string; title: Bi<string>; value: Bi<string | undefined>; issuer: Bi<string | undefined>;
   reference?: string; validUntil?: string; document?: string; group: 'licence' | 'iso' | 'sustainability' | 'compliance';
 }
-export interface Figure { value: string; label: Bi<string> }
+export interface Figure { value: string; label: Bi<string>; placeholder?: boolean }
 export interface Company { crNumber?: string; vatNumber?: string; sceNumber?: string; address: Bi<string | undefined> }
 
 // ---------- image handling ----------
@@ -72,6 +72,10 @@ function checkDocument(path: string | null | undefined, owner: string) {
 }
 
 const blank = (v?: string | null) => (v && v.trim() ? v.trim() : undefined);
+/** A value typed as only X characters (XX, XXXXXXXXXX) is a placeholder for a number not supplied yet. */
+export const isPlaceholderValue = (v?: string) => !!v && /^X+$/i.test(v.replace(/[\s+]/g, ''));
+/** Drops placeholder entries: used for everything machines read (Markdown, llms.txt, JSON-LD). */
+export const real = <T extends { placeholder?: boolean }>(list: T[]) => list.filter((x) => !x.placeholder);
 const byOrder = <T extends { order: number; name: string }>(a: T, b: T) => a.order - b.order || a.name.localeCompare(b.name);
 const reader = createReader(process.cwd(), keystaticConfig);
 
@@ -90,6 +94,7 @@ async function loadProjects(): Promise<Project[]> {
         slug,
         category: e.category as Category,
         featured: e.featured,
+        placeholder: e.placeholder,
         year: blank(e.year),
         areaSqm: e.areaSqm ?? undefined,
         plotSqm: e.plotSqm ?? undefined,
@@ -113,7 +118,7 @@ async function loadTeam(): Promise<Member[]> {
     return {
       order: e.order ?? 10, name: e.nameEn,
       m: {
-        slug,
+        slug, placeholder: e.placeholder,
         name: { en: e.nameEn, ar: e.nameAr },
         role: { en: e.roleEn, ar: e.roleAr },
         specialty: { en: blank(e.specialtyEn), ar: blank(e.specialtyAr) },
@@ -132,7 +137,7 @@ async function loadPartners(): Promise<Partner[]> {
     return {
       order: e.order ?? 10, name: e.nameEn,
       p: {
-        slug, name: { en: e.nameEn, ar: e.nameAr },
+        slug, placeholder: e.placeholder, name: { en: e.nameEn, ar: e.nameAr },
         logo: await optimize(e.logo, 480), logoIsVector: !!e.logo && /\.svg$/i.test(e.logo),
         url: blank(e.url),
       } satisfies Partner,
@@ -165,7 +170,7 @@ async function loadFigures(): Promise<Figure[]> {
   const s = await reader.singletons.numbers.read();
   return (s?.items ?? [])
     .filter((i) => blank(i.value))
-    .map((i) => ({ value: i.value.trim(), label: { en: i.labelEn, ar: i.labelAr } }));
+    .map((i) => ({ value: i.value.trim(), label: { en: i.labelEn, ar: i.labelAr }, placeholder: isPlaceholderValue(i.value) }));
 }
 
 async function loadCompany(): Promise<Company> {
@@ -186,10 +191,18 @@ export const partners = await loadPartners();
 export const credentials = await loadCredentials();
 export const figures = await loadFigures();
 export const company = await loadCompany();
+/** Company details without placeholder values, for machine-readable outputs */
+export const companyFacts: Company = {
+  ...company,
+  crNumber: isPlaceholderValue(company.crNumber) ? undefined : company.crNumber,
+  vatNumber: isPlaceholderValue(company.vatNumber) ? undefined : company.vatNumber,
+  sceNumber: isPlaceholderValue(company.sceNumber) ? undefined : company.sceNumber,
+};
 
 /** 1200×630 JPEG link-preview image (og:image), cropped from the Home hero render. */
 async function loadOgImage() {
-  const src = (projects.find((p) => p.featured) ?? projects[0])?.coverSrc;
+  const list = real(projects);
+  const src = (list.find((p) => p.featured) ?? list[0])?.coverSrc;
   const meta = src ? files[src]?.default : undefined;
   if (!meta) return undefined;
   const img = await getImage({ src: meta, width: 1200, height: 630, fit: 'cover', format: 'jpg', quality: 82 });

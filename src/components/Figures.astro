@@ -15,7 +15,7 @@ const s = t(lang);
         {figures.map((f) => (
           <div class="fig">
             <dt class="fig-label">{f.label[lang]}</dt>
-            <dd class="fig-value"><bdi>{f.value}</bdi></dd>
+            <dd class="fig-value"><bdi dir="ltr">{f.value}</bdi>{f.placeholder && <span class="ph-badge">{s.placeholder}</span>}</dd>
           </div>
         ))}
       </dl>
@@ -29,5 +29,6 @@ const s = t(lang);
   /* Number above its label, read in that order visually; label first in the DOM for screen readers */
   .fig { display: flex; flex-direction: column-reverse; gap: var(--sp-1); }
   .fig-value { margin: 0; font-size: var(--step-3); letter-spacing: var(--track-display); line-height: var(--lead-display); font-weight: 500; line-height: 1; font-family: var(--font-en); color: var(--ink); }
+  .fig-value .ph-badge { margin-inline-start: var(--sp-1); vertical-align: 0.4em; }
   .fig-label { color: var(--ink-2); font-size: var(--step-0); }
 </style>

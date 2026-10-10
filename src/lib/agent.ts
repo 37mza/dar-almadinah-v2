@@ -3,7 +3,17 @@
 //  - organizationJsonLd(): schema.org structured data for the firm
 //  - PAGES / pageUrl(): the list of public pages, shared by the sitemap, llms.txt and the router
 import { t, contact, type Lang } from '../i18n/strings';
-import { projects, mapProjects, team, partners, credentials, figures, company } from '../data/projects';
+import * as cms from '../data/projects';
+
+// Placeholder (sample) entries and XX values are shown to visitors with a "Placeholder" tag, but never
+// published to machines, so no search engine or AI agent repeats sample content as fact.
+const projects = cms.real(cms.projects);
+const mapProjects = cms.real(cms.mapProjects);
+const team = cms.real(cms.team);
+const partners = cms.real(cms.partners);
+const figures = cms.real(cms.figures);
+const credentials = cms.credentials;
+const company = cms.companyFacts;
 
 export type Page = '' | 'projects' | 'about' | 'contact' | 'privacy';
 export const PAGES: Page[] = ['', 'projects', 'about', 'contact', 'privacy'];

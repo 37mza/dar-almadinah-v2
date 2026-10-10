@@ -21,6 +21,15 @@ const txt = (label: string, max: number, opts: { required?: boolean; multiline?:
     validation: { length: { min: opts.required ? 1 : 0, max } },
   });
 
+// Sample content that stands in until the real thing arrives. It is tagged "Placeholder" on the page and
+// left out of everything machines read (Markdown pages, llms.txt, structured data). Delete the entry, or
+// untick this once it holds real information.
+const placeholder = fields.checkbox({
+  label: 'Placeholder (sample content)',
+  description: 'Tagged "Placeholder" on the website and hidden from search engines and AI agents. Untick once the details are real.',
+  defaultValue: false,
+});
+
 const order = fields.integer({
   label: 'Order',
   description: 'Lower numbers appear first (1, 2, 3…). Items with the same number are sorted by name.',
@@ -69,6 +78,7 @@ export default config({
           ],
           defaultValue: 'hospitality',
         }),
+        placeholder,
         featured: fields.checkbox({
           label: 'Show on the Home page',
           description: 'The Home page shows the first four featured projects that have a cover render, by Order.',
@@ -139,6 +149,7 @@ export default config({
           ],
         }),
         portrait: img('Portrait', 'src/assets/team'),
+        placeholder,
         order,
       },
     }),
@@ -198,6 +209,7 @@ export default config({
         nameAr: txt('الاسم (عربي)', 80, { required: true }),
         logo: img('Logo', 'src/assets/partners'),
         url: fields.url({ label: 'Website (optional)' }),
+        placeholder,
         order,
       },
     }),
@@ -211,7 +223,7 @@ export default config({
       schema: {
         items: fields.array(
           fields.object({
-            value: txt('Figure', 12, { description: 'As it should appear, e.g. 30+, 120, 1.2M. Leave empty to hide this line.' }),
+            value: txt('Figure', 12, { description: 'As it should appear, e.g. 30+, 120, 1.2M. Leave empty to hide this line. XX shows a placeholder.' }),
             labelEn: txt('Label (English)', 50, { required: true }),
             labelAr: txt('الوصف (عربي)', 50, { required: true }),
           }),
@@ -229,7 +241,7 @@ export default config({
       path: 'src/content/settings/company',
       format: { data: 'yaml' },
       schema: {
-        crNumber: txt('Commercial registration (CR) number', 20, { description: 'Shown at the very bottom of every page. Leave empty to hide.' }),
+        crNumber: txt('Commercial registration (CR) number', 20, { description: 'Shown at the very bottom of every page. Leave empty to hide. Only X characters (XXXXXXXXXX) counts as a placeholder.' }),
         vatNumber: txt('VAT number (optional)', 20),
         sceNumber: txt('Saudi Council of Engineers office number (optional)', 20),
         addressEn: txt('Address (English, optional)', 140),

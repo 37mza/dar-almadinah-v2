@@ -21,10 +21,11 @@ const points = mapProjects.map((p) => ({
   metric: p.metric ? `${p.metric.value.toLocaleString('en-US')}` : undefined,
   metricLabel: p.metric?.label[lang],
   hasView: withImages.has(p.slug),
+  placeholder: !!p.placeholder,
 }));
 const labels = {
   plot: s.map.plot, bua: s.map.bua, completion: s.map.completion, status: s.map.status,
-  view: s.projects.view, satellite: s.map.satellite, streets: s.map.streets,
+  view: s.projects.view, satellite: s.map.satellite, streets: s.map.streets, placeholder: s.placeholder,
 };
 const legend = (['hospitality', 'residential', 'commercial', 'mixed'] as const).filter((c) => mapProjects.some((p) => p.category === c));
 ---
@@ -71,6 +72,7 @@ const legend = (['hospitality', 'residential', 'commercial', 'mixed'] as const).
   :global(.pin-pop .cat) { color: var(--ink-3); font-size: var(--step--1); letter-spacing: var(--track-small); line-height: var(--lead-small); margin-block: 0.25rem var(--sp-1); }
   :global(.pin-pop dl) { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 0.25rem var(--sp-2); font-size: var(--step--1); letter-spacing: var(--track-small); line-height: var(--lead-small); }
   :global(.pin-pop dt) { color: var(--ink-3); }
+  :global(.pin-pop .ph-badge) { margin-block-end: var(--sp-1); }
   :global(.pin-pop dd) { margin: 0; }
   :global(.pin-pop a) { display: inline-block; margin-block-start: var(--sp-2); color: var(--red-ink); font-size: var(--step--1); letter-spacing: var(--track-small); line-height: var(--lead-small); }
   :global(.map-style-btn) { background: var(--bg) !important; color: var(--ink) !important; font: 500 0.8125rem/1 var(--font-en) !important; padding: 0 0.75rem !important; inline-size: auto !important; min-inline-size: 2.25rem; block-size: 2.25rem !important; }

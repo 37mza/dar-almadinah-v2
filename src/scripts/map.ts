@@ -6,9 +6,9 @@ import { MAPBOX_TOKEN, MAP_STYLES, MAP_CENTER } from '../config/site';
 
 interface Point {
   slug: string; lng: number; lat: number; category: string; categoryLabel: string; name: string;
-  status?: string; year?: string; plot?: string; bua?: string; metric?: string; metricLabel?: string; hasView: boolean;
+  status?: string; year?: string; plot?: string; bua?: string; metric?: string; metricLabel?: string; hasView: boolean; placeholder?: boolean;
 }
-type Labels = Record<'plot' | 'bua' | 'completion' | 'status' | 'view' | 'satellite' | 'streets', string>;
+type Labels = Record<'plot' | 'bua' | 'completion' | 'status' | 'view' | 'satellite' | 'streets' | 'placeholder', string>;
 
 const wrap = document.querySelector<HTMLElement>('[data-map-wrap]');
 const container = document.querySelector<HTMLElement>('[data-map]');
@@ -78,6 +78,7 @@ if (wrap && container && raw) {
   function popupNode(p: Point) {
     const root = el('div', undefined, 'pin-pop');
     root.dir = lang === 'ar' ? 'rtl' : 'ltr';
+    if (p.placeholder) root.append(el('span', labels.placeholder, 'ph-badge'));
     root.append(el('h3', p.name), el('p', p.categoryLabel, 'cat'));
     const dl = el('dl');
     const row = (k: string, v?: string) => { if (v) dl.append(el('dt', k), el('dd', v)); };

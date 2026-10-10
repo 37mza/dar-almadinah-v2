@@ -19,7 +19,7 @@ const initials = (n: string) => n.split(/\s+/).filter(Boolean).slice(0, 2).map((
                 ? <img src={m.portrait} alt={m.name[lang]} loading="lazy" decoding="async" width="640" height="800" />
                 : <span class="initials" aria-hidden="true">{initials(m.name[lang])}</span>}
             </div>
-            <p class="role">{m.role[lang]}</p>
+            <p class="role">{m.role[lang]}{m.placeholder && <> <span class="ph-badge">{s.placeholder}</span></>}</p>
             <h3 class="name">{m.name[lang]}</h3>
             {m.specialty[lang] && <p class="specialty">{m.specialty[lang]}</p>}
             {m.credentials.length > 0 && (

@@ -12,6 +12,7 @@ export const strings = {
   ar: {
     dir: 'rtl',
     firm: 'دار المدينة للاستشارات الهندسية',
+    placeholder: 'مؤقت',
     firmShort: 'دار المدينة',
     otherLang: 'English',
     otherLangCode: 'en',
@@ -129,6 +130,7 @@ export const strings = {
   en: {
     dir: 'ltr',
     firm: 'Dar Al Madinah Engineering Consultants',
+    placeholder: 'Placeholder',
     firmShort: 'Dar Al Madinah',
     otherLang: 'العربية',
     otherLangCode: 'ar',

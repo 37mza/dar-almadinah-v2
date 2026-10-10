@@ -196,6 +196,15 @@ button, [role='button'], .btn, .chip {
 /* Heading on one side, content on the other; stacks on narrow screens */
 .two-col { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: var(--sp-4) var(--sp-5); align-items: start; }
 @media (max-width: 860px) { .two-col { grid-template-columns: 1fr; } }
+/* "Placeholder" tag on sample content (CMS: Placeholder ticked, or a value typed as XX) */
+.ph-badge {
+  display: inline-block; vertical-align: middle;
+  font-family: var(--font-en); font-size: 0.7rem; font-weight: 400; line-height: 1.4;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  padding: 0.1rem 0.45rem; border-radius: 2px;
+  border: 1px dashed var(--ink-3); color: var(--ink-3);
+}
+html[lang='ar'] .ph-badge { font-family: var(--font-ar); letter-spacing: 0; text-transform: none; font-size: 0.78rem; }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 
 /* ---------- Touch: 44px targets and feedback the instant a finger lands ---------- */

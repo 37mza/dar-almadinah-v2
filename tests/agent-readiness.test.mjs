@@ -203,3 +203,41 @@ describe('Site address', () => {
     assert.equal(siteUrl({}), 'https://www.daralmadinah.com.sa');
   });
 });
+
+describe('Placeholders (sample content)', () => {
+  const SAMPLE = /Sample Project|مشروع تجريبي|Team Member|عضو الفريق|Partner \d|شريك [٠-٩]|\bXX+\b/;
+  const machine = [
+    ...PATHS.map((p) => `${p}index.md`), 'llms.txt',
+  ];
+  test('never appear in Markdown pages or llms.txt', () => {
+    for (const f of machine) assert.doesNotMatch(read(f), SAMPLE, f);
+  });
+  test('never appear in JSON-LD', () => {
+    for (const p of PATHS) {
+      const ld = read(`${p}index.html`).match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1];
+      assert.doesNotMatch(ld, SAMPLE, p);
+      assert.doesNotMatch(ld, /Commercial Registration|vatID/, 'no placeholder CR/VAT');
+    }
+  });
+  test('are visibly tagged wherever they show on the page', () => {
+    for (const lang of LANGS) {
+      const about = read(`${lang}/about/index.html`);
+      const tag = lang === 'ar' ? 'مؤقت' : 'Placeholder';
+      for (const html of [about, read(`${lang}/index.html`)]) {
+        const badges = (html.match(new RegExp(`class="ph-badge"[^>]*>${tag}<`, 'g')) ?? []).length;
+        assert.ok(badges >= 3 + 3, `${lang}: figures (3) and footer numbers (3) are tagged; found ${badges}`);
+      }
+      assert.ok((about.match(/class="ph-badge"/g) ?? []).length >= 3 + 3 + 4 + 6, `${lang}/about: team and partners tagged`);
+    }
+  });
+  test('sample map projects carry the placeholder flag to the popup', () => {
+    const html = read('en/projects/index.html');
+    const data = html.match(/data-map-data>([\s\S]*?)<\/script>/)?.[1];
+    if (!data) return; // map is off when no Mapbox token is set for the build
+    const { points } = JSON.parse(data);
+    const samples = points.filter((p) => /^Sample Project/.test(p.name));
+    assert.ok(samples.length >= 1);
+    assert.ok(samples.every((p) => p.placeholder === true));
+    assert.ok(points.filter((p) => !/^Sample Project/.test(p.name)).every((p) => !p.placeholder));
+  });
+});

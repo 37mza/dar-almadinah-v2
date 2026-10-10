@@ -3,7 +3,11 @@
 import type { APIRoute } from 'astro';
 import { t, contact } from '../i18n/strings';
 import { PAGES, pageUrl, mdPath, pageTitle, siteOrigin } from '../lib/agent';
-import { credentials, projects, figures } from '../data/projects';
+import { credentials, projects as allPortfolio, figures as allFigures, real } from '../data/projects';
+
+// Placeholder (sample) content is never listed here
+const projects = real(allPortfolio);
+const figures = real(allFigures);
 
 export const GET: APIRoute = ({ site }) => {
   const origin = siteOrigin(site);

@@ -1,7 +1,7 @@
 ---
 import { t, contact, type Lang } from '../i18n/strings';
 import Wordmark from './Wordmark.astro';
-import { company } from '../data/projects';
+import { company, isPlaceholderValue } from '../data/projects';
 interface Props { lang: Lang }
 const { lang } = Astro.props;
 const s = t(lang);
@@ -32,9 +32,9 @@ const year = new Date().getFullYear();
     </div>
     {(company.crNumber || company.vatNumber || company.sceNumber) && (
       <p class="legal">
-        {company.crNumber && <span>{s.footer.cr} <bdi dir="ltr">{company.crNumber}</bdi></span>}
-        {company.vatNumber && <span>{s.footer.vat} <bdi dir="ltr">{company.vatNumber}</bdi></span>}
-        {company.sceNumber && <span>{s.footer.sce} <bdi dir="ltr">{company.sceNumber}</bdi></span>}
+        {([['cr', company.crNumber], ['vat', company.vatNumber], ['sce', company.sceNumber]] as const).map(([k, v]) => v && (
+          <span>{s.footer[k]} <bdi dir="ltr">{v}</bdi>{isPlaceholderValue(v) && <> <span class="ph-badge">{s.placeholder}</span></>}</span>
+        ))}
       </p>
     )}
   </div>

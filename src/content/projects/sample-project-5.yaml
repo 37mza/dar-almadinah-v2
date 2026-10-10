@@ -1,0 +1,16 @@
+nameEn: Sample Project 5
+nameAr: مشروع تجريبي ٥
+category: hospitality
+placeholder: true
+featured: false
+order: 105
+gallery: []
+locationEn: Madinah
+locationAr: المدينة المنورة
+latitude: 24.456
+longitude: 39.5768
+statusEn: Under construction
+statusAr: قيد التنفيذ
+metricLabelEn: Keys
+metricLabelAr: غرفة
+metricValue: 240

@@ -75,6 +75,12 @@ Sign in with GitHub; your account needs write access to `37mza/dar-almadinah-v2`
 | **Site settings > Office in numbers** | Home and About | Typed by hand. A figure with an empty value is hidden. |
 | **Site settings > Company details** | Footer of every page | Commercial registration, VAT and SCE numbers. |
 
+- **Placeholders:** sample entries stand in where real content hasn't arrived yet: 4 team members, 6 partners,
+  6 "Sample Project" pins on the map (Madinah, made-up locations), three "XX" figures and the XXXX CR/VAT/SCE numbers.
+  They show a dashed "Placeholder / مؤقت" tag on the page and are never published to search engines or AI agents
+  (Markdown pages, llms.txt, structured data). To replace one: edit it with real details and untick **Placeholder**,
+  or delete it. For figures and company numbers, typing the real value replaces the XX.
+  Licences not yet held (ISO, LEED, Mostadam) are deliberately not shown as placeholders, since that would read as a claim.
 - Images: upload originals (JPG/PNG/WebP, up to 15 MB). The build converts them to WebP at the right sizes.
 - Certificate files (optional): PDF or image, up to 15 MB. If added, visitors can open them.
 - Empty fields (year, area, status, description…) are hidden on the site.

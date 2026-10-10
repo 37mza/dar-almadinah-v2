@@ -1,0 +1,17 @@
+nameEn: Sample Project 1
+nameAr: مشروع تجريبي ١
+category: hospitality
+placeholder: true
+featured: false
+order: 101
+gallery: []
+locationEn: Madinah
+locationAr: المدينة المنورة
+latitude: 24.4712
+longitude: 39.6043
+year: '2019'
+statusEn: Completed
+statusAr: مكتمل
+metricLabelEn: Keys
+metricLabelAr: غرفة
+metricValue: 120
